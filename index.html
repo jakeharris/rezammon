@@ -4,33 +4,76 @@
     <title>Socket.IO chat</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
+      body { 
+        font-family:
+          "HelveticaNeue-Light",
+          "Helvetica Neue Light",
+          "Helvetica Neue",
+          Helvetica,
+          Arial,
+          "Lucida Grande",
+          sans-serif;
+      }
+      .login { 
+        display: none;
+        width: 100%; 
+        height: 100%; 
+        
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        z-index: 3;
+        
+        background: #282828;
+        color: white;
+        
+      }
+      .usernameInput {
+        background-color: transparent;
+        border: none;
+        border-bottom: 2px solid #fff;
+        outline: none;
+        padding-bottom: 15px;
+        text-align: center;
+        width: 400px;
+      }
+      canvas#c {
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
     </style>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" type="text" /><button>Send</button>
-    </form>
+    <div class="login">
+      <div class="form">
+        <h3 class="title">What's your nickname?</h3>
+        <input class="usernameInput" type="text" maxlength="14" />
+      </div>
+    </div>
+    <canvas id="c"></canvas>
   </body>
   <script>
-    var socket = io();
-    $('form').submit(function(e){
-      e.preventDefault()
-      socket.emit('chat message', $('#m').val())
-      $('#m').val('')
-      return false
+    var socket = io(),
+        canvas = $('#c'),
+        id,
+        isHero = false,
+        username,
+        usernameInput = $('.login .form .usernameInput')
+      
+    socket.on('player-connect', function (sid) {
+      id = sid
+      console.log('connected as ' + id)
     })
-    socket.on('chat message', function (msg) {
-      $('#messages').append($('<li>').text(msg));
+    
+    socket.on('hero-connect', function() {
+      isHero = true
     })
+    socket.on('hero-move', function (x, y) {
+      
+    })
+
   </script>
 </html>
