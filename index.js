@@ -1,10 +1,10 @@
 var app = require('express')(),
-    http = require('http').Server(app),
-    io = require('socket.io')(http),
-    port = normalizePort(process.env.PORT || '1107');
+    port = normalizePort(process.env.PORT || '1107')
 
+app.set('port', port)
 
-app.set('port', port);
+var http = require('http').Server(app),
+    io = require('socket.io')(http)
 
 app.get('/', function (req, res) {
   'use strict';
