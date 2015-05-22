@@ -57,23 +57,38 @@
   </body>
   <script>
     var socket = io(),
-        canvas = $('#c'),
+        canvas = document.getElementById('c'),
+        c = canvas.getContext('2d'),
         id,
         isHero = false,
         username,
         usernameInput = $('.login .form .usernameInput')
       
-    socket.on('player-connect', function (sid) {
-      id = sid
+    socket.on('user-connect', function (data) {
+      id = data.id
       console.log('connected as ' + id)
+      if(!isHero) {
+        c.fillStyle = '#f64'
+        c.beginPath()
+        c.fillText('u r not the hero', 100, 100)
+        c.endPath()
+      }
     })
     
     socket.on('hero-connect', function() {
       isHero = true
+      c.fillStyle = '#6f4'
+      c.beginPath()
+      c.fillText('u r the hero', 100, 100)
+      c.endPath()
     })
-    socket.on('hero-move', function (x, y) {
+    socket.on('hero-move', function (data) {
       
     })
+    
+    window.onbeforeunload = function (e) {
+      socket.disconnect() 
+    }
 
   </script>
 </html>
