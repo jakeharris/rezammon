@@ -80,7 +80,12 @@
       c.fillStyle = '#6f4'
       c.beginPath()
       c.fillText('u r the hero', 100, 100)
-      c.endPath()
+      c.closePath()
+    })
+    
+    $(window).on('unload', function () {
+      socket.emit('log-client-disconnect')
+      socket.disconnect()
     })
 
   </script>
