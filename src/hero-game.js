@@ -10,15 +10,9 @@ function createHero(face) {
 function HeroGame (face) {
   'use strict';
 
-  var players = []
-
+  this.players = []
   this.inter = face
   this.heroID = -1
-
-  this.chooseHero = function() {
-    return players[0]
-  }
-
 }
 
 HeroGame.prototype.getHeroID = function () {

@@ -13,10 +13,56 @@ app.get('/', function (req, res) {
 
 console.log(game)
 
+// GAME STUFF
+var heroID = null,
+    players = 0
+
 io.on('connection', function (socket) {
   'use strict';
-  inter.onConnection(socket, io)
+  
+  if(!socket.hasBeenConfigured) {
+    if(!hasConnectedHero())
+      initializeHeroSocket(socket);
+
+    io.emit('user-connect', {
+      id: socket.id
+    })
+
+    players++
+
+    console.log('%%%%% NEW USER CONNECTED %%%%%')
+    console.log('id: ' + socket.id)
+    console.log('isHero function: ' + isHero)
+    console.log('isHero? ' + isHero(socket))
+    console.log('connected players: ' + players)
+    console.log()
+    socket.hasBeenConfigured = true
+  }
+  
+  socket.on('disconnect', function (socket) {
+    'use strict';
+    console.log('disconnect')
+    if(isHero(socket))
+      heroID = null
+
+    players--
+  })
+  
 })
+
+function isHero(socket) {
+  'use strict';
+  return socket.id === heroID 
+}
+function hasConnectedHero() {
+  'use strict';
+  return heroID !== null && heroID !== undefined
+}
+function initializeHeroSocket(socket) {
+  'use strict';
+  socket.emit('hero-connect')
+  heroID = socket.id
+}
 
 http.listen(port, function () {
   'use strict';

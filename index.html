@@ -4,7 +4,7 @@
     <title>Socket.IO chat</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { 
+      body {
         font-family:
           "HelveticaNeue-Light",
           "Helvetica Neue Light",
@@ -14,19 +14,19 @@
           "Lucida Grande",
           sans-serif;
       }
-      .login { 
+      .login {
         display: none;
-        width: 100%; 
-        height: 100%; 
-        
-        position: absolute; 
-        top: 0; 
-        left: 0; 
+        width: 100%;
+        height: 100%;
+
+        position: absolute;
+        top: 0;
+        left: 0;
         z-index: 3;
-        
+
         background: #282828;
         color: white;
-        
+
       }
       .usernameInput {
         background-color: transparent;
@@ -63,7 +63,7 @@
         isHero = false,
         username,
         usernameInput = $('.login .form .usernameInput')
-      
+
     socket.on('user-connect', function (data) {
       id = data.id
       console.log('connected as ' + id)
@@ -71,10 +71,10 @@
         c.fillStyle = '#f64'
         c.beginPath()
         c.fillText('u r not the hero', 100, 100)
-        c.endPath()
+        c.closePath()
       }
     })
-    
+
     socket.on('hero-connect', function() {
       isHero = true
       c.fillStyle = '#6f4'
@@ -82,13 +82,6 @@
       c.fillText('u r the hero', 100, 100)
       c.endPath()
     })
-    socket.on('hero-move', function (data) {
-      
-    })
-    
-    window.onbeforeunload = function (e) {
-      socket.disconnect() 
-    }
 
   </script>
 </html>
