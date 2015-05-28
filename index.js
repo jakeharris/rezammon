@@ -20,24 +20,21 @@ var heroID = null,
 io.on('connection', function (socket) {
   'use strict';
   
-  if(!socket.hasBeenConfigured) {
-    if(!hasConnectedHero())
-      initializeHeroSocket(socket);
+  if(!hasConnectedHero())
+    initializeHeroSocket(socket);
 
-    io.emit('user-connect', {
-      id: socket.id
-    })
+  io.emit('user-connect', {
+    id: socket.id
+  })
 
-    players++
+  players++
 
-    console.log('%%%%% NEW USER CONNECTED %%%%%')
-    console.log('id: ' + socket.id)
-    console.log('isHero function: ' + isHero)
-    console.log('isHero? ' + isHero(socket))
-    console.log('connected players: ' + players)
-    console.log()
-    socket.hasBeenConfigured = true
-  }
+  console.log('%%%%% NEW USER CONNECTED %%%%%')
+  console.log('id: ' + socket.id)
+  console.log('isHero function: ' + isHero)
+  console.log('isHero? ' + isHero(socket))
+  console.log('connected players: ' + players)
+  console.log()
   
   socket.on('disconnect', function (socket) {
     'use strict';
