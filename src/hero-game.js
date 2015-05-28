@@ -1,4 +1,4 @@
-//var Player = require('./player')
+var Player = require('./player')
 
 module.exports = createHero
 
@@ -26,5 +26,11 @@ HeroGame.prototype.getHeroID = function () {
 
 HeroGame.prototype.chooseHero = function () {
   'use strict';
+  //TODO: flesh this out. needs to pick based on bias
   return this.players[0]
-};
+}
+
+HeroGame.prototype.addPlayer = function (id) {
+  'use strict';
+  this.players.push(new Player(id))
+}
