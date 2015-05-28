@@ -59,22 +59,6 @@ io.on('connection', function (socket) {
   
 })
 
-function isHero(socket) {
-  'use strict';
-  return socket.id === heroID 
-}
-function hasConnectedHero() {
-  'use strict';
-  var heroSocket = io.sockets.server.eio.clients[heroID]
-  if(heroSocket === undefined)
-    heroID = null
-  return heroID !== null && heroID !== undefined
-}
-function initializeHeroSocket(socket) {
-  'use strict';
-  socket.emit('hero-connect')
-  heroID = socket.id
-}
 
 http.listen(port, function () {
   'use strict';
