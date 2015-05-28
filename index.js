@@ -1,15 +1,17 @@
-var app = require('express')(),
-    port = normalizePort(process.env.PORT || '1107'),
-    http = require('http').Server(app),
-    io = require('socket.io')(http),
-    inter = require('./src/hero-game-socket-io-interface'),
-    game = require('./src/hero-game')(inter)
+var express = require('express')
 
-
+app = express()
+app.use('/bower_components', express.static(__dirname + '/bower_components'))
 app.get('/', function (req, res) {
   'use strict';
   res.sendFile(__dirname + '/index.html')
 })
+
+var http = require('http').Server(app),
+    io = require('socket.io')(http),
+    inter = require('./src/hero-game-socket-io-interface'),
+    game = require('./src/hero-game')(inter),
+    port = normalizePort(process.env.PORT || '1107')
 
 console.log(game)
 
@@ -20,20 +22,20 @@ var heroID = null,
 io.on('connection', function (socket) {
   'use strict';
   
-  if(!hasConnectedHero())
-    initializeHeroSocket(socket);
+  if(!hasConnectedHero(io))
+    initializeHeroSocket(socket)
 
   io.emit('user-connect', {
     id: socket.id
   })
-
-  players++
+  
+  game.addPlayer(socket.id)
 
   console.log('%%%%% NEW USER CONNECTED %%%%%')
   console.log('id: ' + socket.id)
   console.log('isHero function: ' + isHero)
   console.log('isHero? ' + isHero(socket))
-  console.log('connected players: ' + players)
+  console.log('connected players: ' + io.engine.clientsCount)
   console.log()
   
   socket.on('disconnect', function (socket) {
@@ -41,8 +43,18 @@ io.on('connection', function (socket) {
     console.log('disconnect')
     if(isHero(socket))
       heroID = null
-
-    players--
+      
+    if(!hasConnectedHero()) {
+      heroID = game.getHeroID()
+      if(io.sockets.server.eio.clients[heroID] && io.sockets.server.eio.clients[heroID].emit) 
+        initializeHeroSocket(io.sockets.server.eio.clients[heroID])
+      else heroID = null
+    }
+  })
+  
+  socket.on('log-client-disconnect', function (socket) {
+    'use strict';
+    console.log('disconnecting via browser call')
   })
   
 })
@@ -53,6 +65,9 @@ function isHero(socket) {
 }
 function hasConnectedHero() {
   'use strict';
+  var heroSocket = io.sockets.server.eio.clients[heroID]
+  if(heroSocket === undefined)
+    heroID = null
   return heroID !== null && heroID !== undefined
 }
 function initializeHeroSocket(socket) {
@@ -75,15 +90,13 @@ function normalizePort(val) {
 
   var port = parseInt(val, 10)
 
-  if (isNaN(port)) {
+  if (isNaN(port))
     // named pipe
-    return val;
-  }
+    return val
 
-  if (port >= 0) {
+  if (port >= 0)
     // port number
-    return port;
-  }
+    return port
 
-  return false;
+  return false
 }
