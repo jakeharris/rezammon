@@ -15,14 +15,10 @@ var http = require('http').Server(app),
 
 console.log(game)
 
-// GAME STUFF
-var heroID = null,
-    players = 0
-
 io.on('connection', function (socket) {
   'use strict';
   
-  if(!hasConnectedHero(io))
+  if(!hasConnectedHero(inter))
     initializeHeroSocket(socket)
 
   io.emit('user-connect', {
