@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "node ./index.js",
-    "test": "mocha -R nyan"
+    "test": "mocha -R nyan",
+    "postinstall": "./node_modules/bower/bin/bower install"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,8 @@
   "homepage": "https://github.com/javakat/hero-game",
   "dependencies": {
     "express": "^4.10.2",
-    "socket.io": "^1.3.5"
+    "socket.io": "^1.3.5",
+    "bower": "1.4.1"
   },
   "devDependencies": {
     "mocha": "2.2.5" 
