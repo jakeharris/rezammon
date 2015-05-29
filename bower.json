@@ -1,8 +1,5 @@
 {
   "name": "hero-game",
-  "version": "0.0.1",
-  "main": "",
-  "ignore": [],
   "dependencies": {
     "jquery": "~2.1.4",
     "socket.io-1.2.0": "https://cdn.socket.io/socket.io-1.2.0.js"
