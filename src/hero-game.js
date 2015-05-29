@@ -1,18 +1,20 @@
-var Player = require('./player')
+var Player = require('./player'),
+    ParameterCountError = require('./errors').ParameterCountError,
+    HeroGameSocketIOInterface = require('./hero-game-socket-io-interface')
 
-module.exports = createHero
-
-function createHero(face) {
-  'use strict';
-  return new HeroGame(face)
-}
+module.exports = HeroGame
 
 function HeroGame (face) {
   'use strict';
 
+  if(face === undefined)
+    throw new ParameterCountError('HeroGame configuration requires an interface with the WebSockets implementation.')
+  if(!(face instanceof HeroGameSocketIOInterface.constructor))
+    throw new TypeError('Interface parameter not of expected type; expected HeroGameSocketIOInterface, received ' + face.constructor)
+    
   this.players = []
   this.inter = face
-  this.heroID = -1
+  this.heroID = null
 }
 
 HeroGame.prototype.getHeroID = function () {
