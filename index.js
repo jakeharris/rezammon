@@ -10,7 +10,8 @@ app.get('/', function (req, res) {
 var http = require('http').Server(app),
     io = require('socket.io')(http),
     inter = require('./src/hero-game-socket-io-interface'),
-    game = require('./src/hero-game')(inter),
+    HeroGame = require('./src/hero-game'),
+    game = new HeroGame(inter),
     port = normalizePort(process.env.PORT || '1107')
 
 console.log(game)
