@@ -30,14 +30,14 @@ io.on('connection', function (socket) {
   console.log('%%%%% NEW USER CONNECTED %%%%%')
   console.log('id: ' + socket.id)
   console.log('isHero function: ' + isHero)
-  console.log('isHero? ' + isHero(socket))
+  console.log('isHero? ' + isHero(socket.id))
   console.log('connected players: ' + io.engine.clientsCount)
   console.log()
   
   socket.on('disconnect', function (socket) {
     'use strict';
     console.log('disconnect')
-    if(isHero(socket))
+    if(isHero(socket.id))
       heroID = null
       
     if(!hasConnectedHero()) {
