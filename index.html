@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>Rezammon</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body {
@@ -14,29 +14,6 @@
           "Lucida Grande",
           sans-serif;
       }
-      .login {
-        display: none;
-        width: 100%;
-        height: 100%;
-
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 3;
-
-        background: #282828;
-        color: white;
-
-      }
-      .usernameInput {
-        background-color: transparent;
-        border: none;
-        border-bottom: 2px solid #fff;
-        outline: none;
-        padding-bottom: 15px;
-        text-align: center;
-        width: 400px;
-      }
       canvas#c {
         width: 100%;
         height: 100%;
@@ -47,12 +24,6 @@
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
   </head>
   <body>
-    <div class="login">
-      <div class="form">
-        <h3 class="title">What's your nickname?</h3>
-        <input class="usernameInput" type="text" maxlength="14" />
-      </div>
-    </div>
     <canvas id="c"></canvas>
   </body>
   <script>
