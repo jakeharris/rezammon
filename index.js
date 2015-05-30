@@ -9,9 +9,9 @@ app.get('/', function (req, res) {
 
 var http = require('http').Server(app),
     io = require('socket.io')(http),
-    inter = require('./src/hero-game-socket-io-interface'),
-    HeroGame = require('./src/hero-game'),
-    game = new HeroGame(inter),
+    inter = require('./src/rezammon-socket-io-interface'),
+    Rezammon = require('./src/rezammon'),
+    game = new Rezammon(inter),
     port = normalizePort(process.env.PORT || '1107')
 
 console.log(game)
@@ -19,8 +19,8 @@ console.log(game)
 io.on('connection', function (socket) {
   'use strict';
   
-  if(!hasConnectedHero(inter))
-    initializeHeroSocket(socket)
+  if(!inter.hasConnectedHero())
+    inter.initializeHeroSocket(socket)
 
   io.emit('user-connect', {
     id: socket.id
@@ -30,20 +30,20 @@ io.on('connection', function (socket) {
 
   console.log('%%%%% NEW USER CONNECTED %%%%%')
   console.log('id: ' + socket.id)
-  console.log('isHero? ' + isHero(socket.id))
+  console.log('isHero? ' + inter.isHero(socket.id))
   console.log('connected players: ' + io.engine.clientsCount)
   console.log()
   
   socket.on('disconnect', function (socket) {
     'use strict';
     console.log('disconnect')
-    if(isHero(socket.id))
+    if(inter.isHero(socket.id))
       heroID = null
       
-    if(!hasConnectedHero()) {
+    if(!inter.hasConnectedHero()) {
       heroID = game.getHeroID()
       if(io.sockets.server.eio.clients[heroID] && io.sockets.server.eio.clients[heroID].emit) 
-        initializeHeroSocket(io.sockets.server.eio.clients[heroID])
+        inter.initializeHeroSocket(io.sockets.server.eio.clients[heroID])
       else heroID = null
     }
   })
