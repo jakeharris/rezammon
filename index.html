@@ -60,9 +60,7 @@
         canvas = document.getElementById('c'),
         c = canvas.getContext('2d'),
         id,
-        isHero = false,
-        username,
-        usernameInput = $('.login .form .usernameInput')
+        isHero = false
 
     socket.on('user-connect', function (data) {
       id = data.id
@@ -84,7 +82,6 @@
     })
     
     $(window).on('unload', function () {
-      socket.emit('log-client-disconnect')
       socket.disconnect()
     })
 

@@ -30,7 +30,6 @@ io.on('connection', function (socket) {
 
   console.log('%%%%% NEW USER CONNECTED %%%%%')
   console.log('id: ' + socket.id)
-  console.log('isHero function: ' + isHero)
   console.log('isHero? ' + isHero(socket.id))
   console.log('connected players: ' + io.engine.clientsCount)
   console.log()
@@ -47,11 +46,6 @@ io.on('connection', function (socket) {
         initializeHeroSocket(io.sockets.server.eio.clients[heroID])
       else heroID = null
     }
-  })
-  
-  socket.on('log-client-disconnect', function (socket) {
-    'use strict';
-    console.log('disconnecting via browser call')
   })
   
 })
