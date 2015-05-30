@@ -1,21 +1,21 @@
 var ParameterCountError = require('./errors').ParameterCountError
 
-module.exports = new HeroGameSocketIOInterface()
+module.exports = new RezammonSocketIOInterface()
 
-function HeroGameSocketIOInterface () {
+function RezammonSocketIOInterface () {
   'use strict';
   this.heroID = null
 }
 
-HeroGameSocketIOInterface.prototype.isHero = function (socketID) {
+RezammonSocketIOInterface.prototype.isHero = function (socketID) {
   'use strict';
   return socketID === this.heroID 
 }
-HeroGameSocketIOInterface.prototype.hasConnectedHero = function () {
+RezammonSocketIOInterface.prototype.hasConnectedHero = function () {
   'use strict';
   return this.heroID !== null && this.heroID !== undefined
 }
-HeroGameSocketIOInterface.prototype.initializeHeroSocket = function (socket) {
+RezammonSocketIOInterface.prototype.initializeHeroSocket = function (socket) {
   'use strict';
   if(socket === undefined)
     throw new ParameterCountError('Function requires a socket input.')

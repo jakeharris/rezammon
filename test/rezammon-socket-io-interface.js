@@ -1,16 +1,16 @@
 var assert = require('assert'),
     ParameterCountError = require('../src/errors').ParameterCountError
 
-describe('HeroGameSocketIOInterface', function () {
+describe('RezammonSocketIOInterface', function () {
   context('Constructor', function () {
     it('should not start with a connected hero', function () {
-      interface = require('../src/hero-game-socket-io-interface')
+      interface = require('../src/rezammon-socket-io-interface')
       assert.equal(false, interface.hasConnectedHero())
     })
   })
   context('Basic use', function () {
     it('should require a socket to initialize a hero', function () {
-      interface = require('../src/hero-game-socket-io-interface')
+      interface = require('../src/rezammon-socket-io-interface')
       assert.throws(function () {
         interface.initializeHeroSocket()
       }, ParameterCountError)
@@ -22,12 +22,12 @@ describe('HeroGameSocketIOInterface', function () {
       })
     })
     it('should have a connected hero after a successful initialization', function () {
-      interface = require('../src/hero-game-socket-io-interface')
+      interface = require('../src/rezammon-socket-io-interface')
       interface.initializeHeroSocket({ id: '0', emit: function () {} })
       assert(interface.hasConnectedHero())
     })
     it('should be able to verify that a socket id is the hero\'s id', function () {
-      interface = require('../src/hero-game-socket-io-interface')
+      interface = require('../src/rezammon-socket-io-interface')
       interface.initializeHeroSocket({ id: '0', emit: function () {} })
       assert(interface.isHero('0'))
     })
