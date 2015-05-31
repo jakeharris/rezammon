@@ -3,6 +3,7 @@ var express = require('express')
 
 app = express()
 app.use('/bower_components', express.static(__dirname + '/bower_components'))
+app.use('/src/client', express.static(__dirname + '/src/client'))
 app.get('/', function (req, res) {
   'use strict';
   res.sendFile(__dirname + '/index.html')
@@ -10,8 +11,10 @@ app.get('/', function (req, res) {
 
 var http = require('http').Server(app),
     io = require('socket.io')(http),
-    inter = require('./src/rezammon-socket-io-interface'),
-    RezammonGame = require('./src/rezammon'),
+    RezammonGame = require('./src/server/rezammon'),
+    RezammonSocketIOInterface = require('./src/server/rezammon-socket-io-interface');
+
+var inter = new RezammonSocketIOInterface(),
     game = new RezammonGame(inter),
     port = normalizePort(process.env.PORT || '1107')
 
