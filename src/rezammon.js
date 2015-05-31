@@ -7,7 +7,7 @@ function RezammonGame (face) {
   if(face === undefined)
     throw new ParameterCountError('Rezammon configuration requires an interface with the WebSockets implementation.')
     
-  if(!(face instanceof RezammonSocketIOInterface))
+  if(!(face instanceof require('./rezammon-socket-io-interface')))
     throw new TypeError('Interface parameter not of expected type; expected RezammonSocketIOInterface, received ' + face.constructor)
     
   this.players = []
