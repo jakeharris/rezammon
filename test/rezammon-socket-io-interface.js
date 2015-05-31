@@ -2,8 +2,8 @@ var assert = require('assert'),
     ParameterCountError = require('../src/errors').ParameterCountError,
     ConfiguredHeroError = require('../src/errors').ConfiguredHeroError,
     MissingHeroError = require('../src/errors').MissingHeroError,
-    RezammonSocketIOInterface = require('../src/rezammon-socket-io-interface'),
-    RezammonGame = require('../src/rezammon'),
+    RezammonSocketIOInterface = require('../src/server/rezammon-socket-io-interface'),
+    RezammonGame = require('../src/server/rezammon'),
     Socket = require('socket.io').Socket
 
 describe('RezammonSocketIOInterface', function () {
@@ -40,14 +40,9 @@ describe('RezammonSocketIOInterface', function () {
       assert(interface.isHero('0'))
     })
   })
-  context('addPlayerTo()', function () {
+  context('addPlayer()', function () {
     before(function () {
-      RezammonGame = require('../src/rezammon')
-    })
-    it('should throw a ParameterCountError if no game was supplied', function () {
-      assert.throws(function () {
-        interface.addPlayerTo()
-      }, ParameterCountError)
+      RezammonGame = require('../src/server/rezammon')
     })
     it('should throw a ParameterCountError if no id was supplied', function () {
       assert.throws(function () {
@@ -94,7 +89,7 @@ describe('RezammonSocketIOInterface', function () {
       assert(interface.isHero('0'))
     })
   })
-  context('socket configuration function', function () {
+  context('configureSocket()', function () {
     
   })
 })
