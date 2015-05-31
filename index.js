@@ -1,3 +1,4 @@
+'using strict';
 var express = require('express')
 
 app = express()
@@ -10,8 +11,8 @@ app.get('/', function (req, res) {
 var http = require('http').Server(app),
     io = require('socket.io')(http),
     inter = require('./src/rezammon-socket-io-interface'),
-    Rezammon = require('./src/rezammon'),
-    game = new Rezammon(inter),
+    RezammonGame = require('./src/rezammon'),
+    game = new RezammonGame(inter),
     port = normalizePort(process.env.PORT || '1107')
 
 console.log(game)
@@ -19,35 +20,18 @@ console.log(game)
 io.on('connection', function (socket) {
   'use strict';
   
-  if(!inter.hasConnectedHero())
-    inter.initializeHeroSocket(socket)
-
-  io.emit('user-connect', {
-    id: socket.id
-  })
+  // all of the following should be in one
+  // interface call:
   
-  game.addPlayer(socket.id)
-
-  console.log('%%%%% NEW USER CONNECTED %%%%%')
-  console.log('id: ' + socket.id)
-  console.log('isHero? ' + inter.isHero(socket.id))
-  console.log('connected players: ' + io.engine.clientsCount)
-  console.log()
+  /// ask interface to determine if we need
+  /// a hero, and assign one if necessary
   
-  socket.on('disconnect', function (socket) {
-    'use strict';
-    console.log('disconnect')
-    if(inter.isHero(socket.id))
-      heroID = null
-      
-    if(!inter.hasConnectedHero()) {
-      heroID = game.getHeroID()
-      if(io.sockets.server.eio.clients[heroID] && io.sockets.server.eio.clients[heroID].emit) 
-        inter.initializeHeroSocket(io.sockets.server.eio.clients[heroID])
-      else heroID = null
-    }
-  })
+  /// ask interface to inform the game of the
+  /// new player
   
+  /// configure the socket to respond to 
+  /// events from the client and other
+  /// sockets
 })
 
 

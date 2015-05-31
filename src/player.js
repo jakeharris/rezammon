@@ -1,3 +1,4 @@
+'using strict';
 var ParameterCountError = require('./errors').ParameterCountError
 
 function Player (id) {

@@ -1,15 +1,13 @@
+'using strict';
 var Player = require('./player'),
     ParameterCountError = require('./errors').ParameterCountError,
     RezammonSocketIOInterface = require('./rezammon-socket-io-interface')
 
-module.exports = Rezammon
-
-function Rezammon (face) {
-  'use strict';
-
+function RezammonGame (face) {
   if(face === undefined)
     throw new ParameterCountError('Rezammon configuration requires an interface with the WebSockets implementation.')
-  if(!(face instanceof RezammonSocketIOInterface.constructor))
+    
+  if(!(face instanceof RezammonSocketIOInterface))
     throw new TypeError('Interface parameter not of expected type; expected RezammonSocketIOInterface, received ' + face.constructor)
     
   this.players = []
@@ -17,8 +15,7 @@ function Rezammon (face) {
   this.heroID = null
 }
 
-Rezammon.prototype.getHeroID = function () {
-  'use strict';
+RezammonGame.prototype.getHeroID = function () {
   if(!this.inter.hasConnectedHero()) {
     // pick one, set it, and return that
     this.heroID = this.chooseHero().getID()
@@ -26,13 +23,13 @@ Rezammon.prototype.getHeroID = function () {
   return this.heroID
 }
 
-Rezammon.prototype.chooseHero = function () {
-  'use strict';
+RezammonGame.prototype.chooseHero = function () {
   //TODO: flesh this out. needs to pick based on bias
   return this.players[0]
 }
 
-Rezammon.prototype.addPlayer = function (id) {
-  'use strict';
+RezammonGame.prototype.addPlayer = function (id) {
   this.players.push(new Player(id))
 }
+
+module.exports = RezammonGame

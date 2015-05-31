@@ -1,22 +1,23 @@
 var assert = require('assert'),
     ParameterCountError = require('../src/errors').ParameterCountError,
-    Rezammon = require('../src/rezammon')
+    RezammonGame = require('../src/rezammon'),
+    RezammonSocketIOInterface = require('../src/rezammon-socket-io-interface')
 
-describe('Rezammon', function () {
-  context('Constructor', function () {
+describe('RezammonGame', function () {
+  context('constructor', function () {
     it('should throw a ParameterCountError if no interface parameter is supplied', function () {
       assert.throws(function () {
-        var game = new Rezammon()
+        var game = new RezammonGame()
       }, ParameterCountError)
     })
     it('should throw a TypeError if the interface parameter is not a RezammonSocketIOInterface', function () {
       assert.throws(function () {
-        var game = new Rezammon('0')
+        var game = new RezammonGame('0')
       }, TypeError)
     })
-    it('should create a Rezammon game if the interface parameter is proper', function () {
+    it('should create a RezammonGame if the interface parameter is proper', function () {
       assert.doesNotThrow(function () {
-        var game = new Rezammon(require('../src/rezammon-socket-io-interface'))
+        var game = new RezammonGame(new RezammonSocketIOInterface())
       })
     })
   })
