@@ -1,12 +1,14 @@
 'using strict';
-var ParameterCountError = require('./errors').ParameterCountError,
-    ConfiguredHeroError = require('./errors').ConfiguredHeroError,
-    MissingHeroError = require('./errors').MissingHeroError,
-    RezammonGame = require('./rezammon')
 
+module.exports = RezammonSocketIOInterface
+
+var ParameterCountError = require('../errors').ParameterCountError,
+    ConfiguredHeroError = require('../errors').ConfiguredHeroError,
+    MissingHeroError = require('../errors').MissingHeroError
 
 function RezammonSocketIOInterface () {
   this.heroID = null
+  this.playersToAdd = 0
 }
 
 RezammonSocketIOInterface.prototype.hasConnectedHero = function () {
@@ -23,12 +25,10 @@ RezammonSocketIOInterface.prototype.isHero = function (id) {
   
   return this.heroID === id
 }
-RezammonSocketIOInterface.prototype.addPlayerTo = function (game, id) {
+RezammonSocketIOInterface.prototype.addPlayer = function (id) {
   if(!game || !id) throw new ParameterCountError()
   if(!(game instanceof RezammonGame)) throw new TypeError()
   if(!(typeof id === 'string')) throw new TypeError()
   
-  game.addPlayer(id)
+  this.playersToAdd++
 }
-
-module.exports = RezammonSocketIOInterface

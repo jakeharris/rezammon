@@ -1,7 +1,7 @@
 var assert = require('assert'),
     ParameterCountError = require('../src/errors').ParameterCountError,
-    RezammonGame = require('../src/rezammon'),
-    RezammonSocketIOInterface = require('../src/rezammon-socket-io-interface')
+    RezammonGame = require('../src/server/rezammon'),
+    RezammonSocketIOInterface = require('../src/server/rezammon-socket-io-interface')
 
 describe('RezammonGame', function () {
   context('constructor', function () {
@@ -21,6 +21,4 @@ describe('RezammonGame', function () {
       })
     })
   })
-
-  
 })

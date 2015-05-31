@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    Player = require('../src/player'),
+    Player = require('../src/server/player'),
     ParameterCountError = require('../src/errors').ParameterCountError
 
 describe('Player', function () {

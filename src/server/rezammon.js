@@ -1,14 +1,17 @@
 'using strict';
+
+module.exports = RezammonGame
+
 var Player = require('./player'),
-    ParameterCountError = require('./errors').ParameterCountError,
+    ParameterCountError = require('../errors').ParameterCountError,
     RezammonSocketIOInterface = require('./rezammon-socket-io-interface')
 
 function RezammonGame (face) {
   if(face === undefined)
     throw new ParameterCountError('Rezammon configuration requires an interface with the WebSockets implementation.')
-    
-  if(!(face instanceof require('./rezammon-socket-io-interface')))
-    throw new TypeError('Interface parameter not of expected type; expected RezammonSocketIOInterface, received ' + face.constructor)
+  if(!(face instanceof RezammonSocketIOInterface))
+    throw new TypeError('Interface parameter not of expected type; expected ' 
+                        + RezammonSocketIOInterface + ', received ' + face)
     
   this.players = []
   this.inter = face
@@ -31,5 +34,3 @@ RezammonGame.prototype.chooseHero = function () {
 RezammonGame.prototype.addPlayer = function (id) {
   this.players.push(new Player(id))
 }
-
-module.exports = RezammonGame

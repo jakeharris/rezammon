@@ -1,5 +1,8 @@
 'using strict';
-var ParameterCountError = require('./errors').ParameterCountError
+
+module.exports = Player
+
+var ParameterCountError = require('../errors').ParameterCountError
 
 function Player (id) {
   if(id === undefined)
@@ -14,5 +17,3 @@ function Player (id) {
 Player.prototype.getID = function () {
   return this.id
 }
-
-module.exports = Player
