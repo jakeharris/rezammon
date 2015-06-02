@@ -3,7 +3,9 @@ var assert = require('assert'),
     Server = require('socket.io'),
     RezammonGame = require('../src/server/rezammon'),
     SocketIOAdapter = require('../src/server/socket-io-adapter'),
-    ParameterCountError = require('../src/errors').ParameterCountError
+    ParameterCountError = require('../src/errors').ParameterCountError,
+    ConfiguredHeroError = require('../src/errors').ConfiguredHeroError,
+    MissingHeroError    = require('../src/errors').MissingHeroError
 
 describe('SocketIOAdapter', function () {
   before(function () {
@@ -48,13 +50,13 @@ describe('SocketIOAdapter', function () {
     })
   })
   context('setHero()', function () {
+    beforeEach(function () {
+      server = new SocketIOAdapter(io, game)
+    })
     it('should be able to set a socket up as a Hero socket if there isn\'t one', function () {
-      console.log(server.hasConnectedHero())
       assert(!server.hasConnectedHero())
       server.setHero('0')
-      console.log(server.hasConnectedHero())
       assert(server.hasConnectedHero())
-      console.log(server.isHero('0'))
       assert(server.isHero('0'))
     })
     it('should throw a ConfiguredHeroError if there\'s already a Hero (even if the Hero\'s ID is the submitted ID)', function () {
@@ -84,12 +86,13 @@ describe('SocketIOAdapter', function () {
     })
     it('should not throw an error if the parameters were proper', function () {
       assert.doesNotThrow(function () {
-        interface.addPlayer('0')
+        server.addPlayer('0')
       })
     })
   })
   context('isHero()', function () {
     beforeEach(function () {
+      server = new SocketIOAdapter(io, game)
       server.setHero('0')
     })
     it('should throw a ParameterCountError if no id was supplied', function () {

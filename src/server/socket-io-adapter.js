@@ -4,6 +4,7 @@ module.exports = SocketIOAdapter
 var ServerAdapter = require('./server-adapter'),
     SocketIOServer = require('socket.io'),
     RezammonGame = require('./rezammon'),
+    Player = require('./player'),
     ParameterCountError = require('../errors').ParameterCountError,
     ConfiguredHeroError = require('../errors').ConfiguredHeroError,
     MissingHeroError = require('../errors').MissingHeroError
