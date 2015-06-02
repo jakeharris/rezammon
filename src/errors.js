@@ -15,6 +15,12 @@ function MissingHeroError() {
   // her to be there.
 }
 
+function NotImplementedError() {
+  // The function wasn't complete, or an
+  // interface method should have been overridden
+  // that was not.
+}
+
 ParameterCountError.prototype = Object.create(Error.prototype)
 ParameterCountError.prototype.constructor = ParameterCountError
 
@@ -24,6 +30,10 @@ ConfiguredHeroError.prototype.constructor = ConfiguredHeroError
 MissingHeroError.prototype = Object.create(Error.prototype)
 MissingHeroError.prototype.constructor = MissingHeroError
 
+NotImplementedError.prototype = Object.create(Error.prototype)
+NotImplementedError.prototype.constructor = NotImplementedError
+
 module.exports.ParameterCountError = ParameterCountError
 module.exports.ConfiguredHeroError = ConfiguredHeroError
 module.exports.MissingHeroError = MissingHeroError
+module.exports.NotImplementedError = NotImplementedError

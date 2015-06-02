@@ -4,19 +4,19 @@ module.exports = RezammonGame
 
 var Player = require('./player'),
     ParameterCountError = require('../errors').ParameterCountError,
-    RezammonSocketIOInterface = require('./rezammon-socket-io-interface')
+    SocketIOAdapter = require('./socket-io-adapter'),
+    SocketIOServer = require('socket.io'),
+    Controller = require('./controller')
 
-function RezammonGame (face) {
-  if(face === undefined)
-    throw new ParameterCountError('Rezammon configuration requires an interface with the WebSockets implementation.')
-  if(!(face instanceof RezammonSocketIOInterface))
-    throw new TypeError('Interface parameter not of expected type; expected ' 
-                        + RezammonSocketIOInterface + ', received ' + face)
-    
-  this.players = []
-  this.inter = face
+
+function RezammonGame (server) {
+  Controller.call(this, server)
+  
   this.heroID = null
 }
+
+RezammonGame.prototype = Object.create(Controller.prototype)
+RezammonGame.prototype.constructor = RezammonGame
 
 RezammonGame.prototype.getHeroID = function () {
   if(!this.inter.hasConnectedHero()) {
@@ -33,4 +33,21 @@ RezammonGame.prototype.chooseHero = function () {
 
 RezammonGame.prototype.addPlayer = function (id) {
   this.players.push(new Player(id))
+}
+
+RezammonGame.prototype.createServerAdapter = function (server) {
+  if(server === undefined)
+    throw new ParameterCountError('Rezammon configuration requires a WebSockets implementation.')
+  if(!(server instanceof SocketIOServer))
+    throw new TypeError('Interface parameter not of expected type; expected ' 
+                        + SocketIOServer + ', received ' + server)
+    
+  switch(server.constructor.name) {
+    case 'Server': // socket.io
+      return new SocketIOAdapter(server, this)
+      break
+    default:
+      throw new TypeError('Failed to create server adapter from server object ' + server.constructor.toString())
+      break
+  }
 }

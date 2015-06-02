@@ -11,11 +11,9 @@ app.get('/', function (req, res) {
 
 var http = require('http').Server(app),
     io = require('socket.io')(http),
-    RezammonGame = require('./src/server/rezammon'),
-    RezammonSocketIOInterface = require('./src/server/rezammon-socket-io-interface');
+    RezammonGame = require('./src/server/rezammon')
 
-var inter = new RezammonSocketIOInterface(),
-    game = new RezammonGame(inter),
+var game = new RezammonGame(io),
     port = normalizePort(process.env.PORT || '1107')
 
 console.log(game)
