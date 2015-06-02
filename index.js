@@ -16,25 +16,6 @@ var http = require('http').Server(app),
 var game = new RezammonGame(io),
     port = normalizePort(process.env.PORT || '1107')
 
-console.log(game)
-
-io.on('connection', function (socket) {
-  'use strict';
-  
-  // all of the following should be in one
-  // interface call:
-  
-  /// ask interface to determine if we need
-  /// a hero, and assign one if necessary
-  
-  /// ask interface to inform the game of the
-  /// new player
-  
-  /// configure the socket to respond to 
-  /// events from the client and other
-  /// sockets
-})
-
 
 http.listen(port, function () {
   'use strict';

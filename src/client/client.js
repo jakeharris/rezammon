@@ -25,6 +25,12 @@ socket.on('hero-connect', function() {
   c.fillText('u r the hero', 100, 100)
   c.closePath()
 })
+socket.on('hero-connected', function () {
+  c.fillStyle = '#6f4'
+  c.beginPath()
+  c.fillText('the hero is here.', 150, 150)
+  c.closePath()
+})
 
 $(window).on('unload', function () {
   socket.disconnect()

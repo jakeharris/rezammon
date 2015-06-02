@@ -13,13 +13,14 @@ function RezammonGame (server) {
   Controller.call(this, server)
   
   this.heroID = null
+  this.players = []
 }
 
 RezammonGame.prototype = Object.create(Controller.prototype)
 RezammonGame.prototype.constructor = RezammonGame
 
 RezammonGame.prototype.getHeroID = function () {
-  if(!this.inter.hasConnectedHero()) {
+  if(!this.server.hasConnectedHero()) {
     // pick one, set it, and return that
     this.heroID = this.chooseHero().getID()
   }
@@ -28,6 +29,8 @@ RezammonGame.prototype.getHeroID = function () {
 
 RezammonGame.prototype.chooseHero = function () {
   //TODO: flesh this out. needs to pick based on bias
+  if(this.players.length < 1)
+    throw new Error('No players are connected; choosing a hero is impossible.')
   return this.players[0]
 }
 
