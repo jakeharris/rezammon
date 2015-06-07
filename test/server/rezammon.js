@@ -1,7 +1,7 @@
 var assert = require('assert'),
-    ParameterCountError = require('../src/errors').ParameterCountError,
-    RezammonGame = require('../src/server/rezammon'),
-    SocketIOAdapter = require('../src/server/socket-io-adapter'),
+    ParameterCountError = require('../../src/errors').ParameterCountError,
+    RezammonGame = require('../../src/server/rezammon'),
+    SocketIOAdapter = require('../../src/server/socket-io-adapter'),
     http = require('http'),
     io = require('socket.io')(http)
 

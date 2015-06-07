@@ -19,7 +19,6 @@ function SocketIOAdapter (io, game, testing) {
   ServerAdapter.call(this, io, game)
   
   this.heroID = null
-  this.players = []
   this.game = this.controller // rational alias
   this.isTesting = (testing) ? testing : false
   
@@ -55,16 +54,10 @@ SocketIOAdapter.prototype.addPlayer = function (id) {
   if(!(typeof id === 'string')) throw new TypeError()
   
   this.game.players.push(new Player(id))
-  try {
-    this.getSocket(id).emit('player-connect')
-    this.server.emit('player-connected')
-  }
-  catch (e) {
-    if(!this.isTesting) console.error(e.message)
-  }
-  finally {
-    return this.game.players.length
-  }
+  return this.game.players.length
+}
+SocketIOAdapter.prototype.removePlayer = function (id) {
+  this.game.removePlayer(id)
 }
 SocketIOAdapter.prototype.configureServer = function () {
   this.server.on('connection', function (socket) {
@@ -77,12 +70,55 @@ SocketIOAdapter.prototype.configureServer = function () {
     /// ask interface to determine if we need
     /// a hero, and assign one if necessary
     if(!this.hasConnectedHero())
-      this.setHero(this.game.getHeroID())
+      this.setHero(this.getHeroID())
     
+    socket.emit('player-connect', { id: socket.id })
+    this.server.emit('player-connected')
+    
+    // print server console data
+    console.log('%%%%% USER CONNECTED %%%%%')
+    console.log('id: ' + socket.id)
+    console.log('isHero: ' + this.isHero(socket.id))
+    console.log('players: ' + this.server.sockets.connected.length)
+    console.log()
     
     /// configure the socket to respond to 
     /// events from the client and other
     /// sockets
+    socket.on('disconnect', function () {
+      if(this.isHero(socket.id)) {
+        this.heroID =  null
+        this.server.emit('hero-disconnected')
+      }
+      
+      this.removePlayer(socket.id)
+        
+      if(!this.hasConnectedHero()) 
+        this.setHero(this.getHeroID())
+        
+      this.server.emit('player-disconnected')
+      console.log('disconnect')
+    }.bind(this, socket))
+    
+    socket.on('hero-move', function (data) {
+      try {
+        if(!this.isHero(socket.id))
+          throw new ConfiguredHeroError(
+            'The player requesting to move is not the configured Hero.'
+            + '(Hero ID: ' + this.getHeroID() + ', '
+            + 'player ID: ' + socket.id + '.)')
+        else {
+          this.game.move(data.direction)
+          this.server.emit('hero-moved', this.game.getHeroLocation())
+        }
+      }
+      catch (e) {
+        console.error(e.message)
+        return
+      }
+      
+      
+    })
     
   }.bind(this))
 }
@@ -91,6 +127,8 @@ SocketIOAdapter.prototype.getSocket = function (id) {
     throw new SocketNotConnectedError('SocketNotConnectedError: getSocket(' + id + ') couldn\'t find socket @ ' + id + '.')
   return this.server.sockets.connected[id]
 }
-SocketIOAdapter.prototype.onConnection = function (socket) {
-  
-}.bind(this)
+SocketIOAdapter.prototype.getHeroID = function () {
+  if(!this.hasConnectedHero())
+    return this.game.chooseHero()
+  else return this.heroID
+}

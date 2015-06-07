@@ -1,9 +1,9 @@
 var assert = require('assert'),
-    Player = require('../src/server/player'),
-    ParameterCountError = require('../src/errors').ParameterCountError
+    Player = require('../../src/server/player'),
+    ParameterCountError = require('../../src/errors').ParameterCountError
 
 describe('Player', function () {
-  context('Constructor', function () {
+  context('constructor', function () {
     it('should throw a ParameterCountError if no id is supplied at construction', function () {
       assert.throws(function () {
         new Player() 

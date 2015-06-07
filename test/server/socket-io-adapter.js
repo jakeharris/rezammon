@@ -1,11 +1,11 @@
 var assert = require('assert'),
     http = require('http'),
     Server = require('socket.io'),
-    RezammonGame = require('../src/server/rezammon'),
-    SocketIOAdapter = require('../src/server/socket-io-adapter'),
-    ParameterCountError = require('../src/errors').ParameterCountError,
-    ConfiguredHeroError = require('../src/errors').ConfiguredHeroError,
-    MissingHeroError    = require('../src/errors').MissingHeroError
+    RezammonGame = require('../../src/server/rezammon'),
+    SocketIOAdapter = require('../../src/server/socket-io-adapter'),
+    ParameterCountError = require('../../src/errors').ParameterCountError,
+    ConfiguredHeroError = require('../../src/errors').ConfiguredHeroError,
+    MissingHeroError    = require('../../src/errors').MissingHeroError
 
 describe('SocketIOAdapter', function () {
   before(function () {
