@@ -1,19 +1,23 @@
 <html>
   <head>
     <title> Tests </title>
-    <base href="../">
-    <link rel="stylesheet" href="./node_modules/mocha/mocha.css" />
+    <base href="../../">
+    <link rel="stylesheet" href="node_modules/mocha/mocha.css" />
   </head>
   <body>
     <div id="mocha"></div>
-    <script src="./node_modules/mocha/mocha.js"></script>
-    <script src="./node_modules/chai/chai.js"></script>
+    <script src="node_modules/mocha/mocha.js"></script>
+    <script src="node_modules/chai/chai.js"></script>
+    <script src="bower_components/sinon-1.15.0/index.js"></script>
     <script>
       mocha.ui('bdd');
       mocha.reporter('html');
       var assert = chai.assert;
     </script>
-    <script src="./test/client/client.js"></script>
+    <script src="bower_components/socket.io-1.3.5/index.js"></script>
+    <canvas id="c"></canvas>
+    <script src="src/client/client.js"></script>
+    <script src="test/client/client.js"></script>
     <script>
         if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
         else { mocha.run(); }

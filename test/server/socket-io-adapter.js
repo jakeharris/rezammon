@@ -8,7 +8,7 @@ var assert = require('assert'),
     MissingHeroError    = require('../../src/errors').MissingHeroError
 
 describe('SocketIOAdapter', function () {
-  before(function () {
+  beforeEach(function () {
     io = Server(http)
     game = new RezammonGame(io)
     server = new SocketIOAdapter(io, game, true) //third param is optional, is true if testing
@@ -53,12 +53,6 @@ describe('SocketIOAdapter', function () {
     beforeEach(function () {
       server = new SocketIOAdapter(io, game, true)
     })
-    it('should be able to set a socket up as a Hero socket if there isn\'t one', function () {
-      assert(!server.hasConnectedHero())
-      server.setHero('0')
-      assert(server.hasConnectedHero())
-      assert(server.isHero('0'))
-    })
     it('should throw a ConfiguredHeroError if there\'s already a Hero (even if the Hero\'s ID is the submitted ID)', function () {
       server.setHero('0')
       assert.throws(function () {
@@ -69,6 +63,12 @@ describe('SocketIOAdapter', function () {
       assert.throws(function () {
         server.setHero('1')
       }, ConfiguredHeroError)
+      assert(server.hasConnectedHero())
+      assert(server.isHero('0'))
+    })
+    it('should be able to set a socket up as a Hero socket if there isn\'t one', function () {
+      assert(!server.hasConnectedHero())
+      server.setHero('0')
       assert(server.hasConnectedHero())
       assert(server.isHero('0'))
     })
@@ -113,6 +113,9 @@ describe('SocketIOAdapter', function () {
     })
     it('should be able to determine that a given socket is the Hero', function () {
       assert(server.isHero('0'))
+    })
+    it('should be able to determine that a given socket is not the Hero', function () {
+      assert(!server.isHero('3'))
     })
   })
   context('configureServer()', function () {
