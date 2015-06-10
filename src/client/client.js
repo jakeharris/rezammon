@@ -12,11 +12,11 @@
     
     var socket = io,
         canvas = document.getElementById('c'),
-        c = canvas.getContext('2d'),
-        id,
-        isHero = false,
-        renderables = []
+        c = canvas.getContext('2d')
     
+    this.id = null
+    this.isHero = false
+    this.renderables = []
     
     socket.on('player-connect', this.playerConnect)
     socket.on('hero-connect', this.heroConnect)
