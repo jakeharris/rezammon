@@ -10,30 +10,33 @@
     if(!io) throw new SyntaxError('Client constructor requires a connection-managing object parameter')
     if(typeof io !== 'object') throw new TypeError('io parameter must be a constructor function (for a connection managing object).')
     
-    var socket = io,
-        canvas = document.getElementById('c'),
-        c = canvas.getContext('2d')
+    this.socket = io
+    this.canvas = document.getElementById('c')
+    this.c = this.canvas.getContext('2d')
     
     this.id = null
     this.isHero = false
     this.renderables = []
     
-    socket.on('player-connect', this.playerConnect)
-    socket.on('hero-connect', this.heroConnect)
-    socket.on('hero-connected', this.heroConnected)
-    socket.on('hero-disconnected', this.heroDisconnected)
+    this.socket.on('player-connect', this.playerConnect)
+    this.socket.on('hero-connect', this.heroConnect)
+    this.socket.on('hero-connected', this.heroConnected)
+    this.socket.on('hero-disconnected', this.heroDisconnected)
     
     window.addEventListener('unload', function () {
-      socket.disconnect()
+      this.socket.disconnect()
     })
   }
   
   
   Client.prototype.playerConnect = function (data) {
-    id = data.id
-    console.log('connected as ' + id)
-    if(!isHero) {
-      renderables.push(
+    if(!data) throw new SyntaxError()
+    if(typeof data !== 'object') throw new TypeError()
+    if(data.id === undefined) throw new SyntaxError()
+    this.id = data.id
+    console.log('connected as ' + this.id)
+    if(!this.isHero) {
+      this.renderables.push(
         new Text({
           fillStyle: '#f64',
           text: 'u r not the hero',
@@ -42,11 +45,11 @@
         })
       )
     }
-    render()
+    this.render()
   }
   Client.prototype.heroConnect = function (data) {
-    isHero = true
-    renderables.push(
+    this.isHero = true
+    this.renderables.push(
       new Text({
         fillStyle: '#6f4',
         text: 'u r the hero',
@@ -54,12 +57,12 @@
         y: 100
       })
     )
-    for(var r in renderables) {
-      if(renderables[r] instanceof Text)
-        if(renderables[r].text === 'u r not the hero')
-          renderables.splice(r, 1)
+    for(var r in this.renderables) {
+      if(this.renderables[r] instanceof Text)
+        if(this.renderables[r].text === 'u r not the hero')
+          this.renderables.splice(r, 1)
     }
-    render()
+    this.render()
     $(window).on('keydown', function (e) {
       var direction
       switch(e.keyCode) {
@@ -78,11 +81,11 @@
         default:
           return false
       }
-      socket.emit('hero-move', { direction: direction })
+      this.socket.emit('hero-move', { direction: direction })
     })
   }
   Client.prototype.heroConnected = function (data) {
-    renderables.push(
+    this.renderables.push(
       new FilledCircle({
         x: 50,
         y: 50,
@@ -90,14 +93,14 @@
         fillStyle: '#faaa42'
       })
     )
-    for(var r in renderables)
-      if(renderables[r] instanceof Text)
-        if(renderables[r].text === 'the hero just left.')
-          renderables.splice(r, 1)
-    render()
+    for(var r in this.renderables)
+      if(this.renderables[r] instanceof Text)
+        if(this.renderables[r].text === 'the hero just left.')
+          this.renderables.splice(r, 1)
+    this.render()
   }
   Client.prototype.heroDisconnected = function (data) {
-    renderables.push(
+    this.renderables.push(
       new Text({
         fillStyle: '#f64',
         text: 'the hero just left.', 
@@ -105,16 +108,16 @@
         y: 150
       })
     )
-    for(var r in renderables)
-      if(renderables[r] instanceof Text)
-        if(renderables[r].text === 'the hero just arrived.')
-          renderables.splice(r, 1)
-    render()
+    for(var r in this.renderables)
+      if(this.renderables[r] instanceof Text)
+        if(this.renderables[r].text === 'the hero just arrived.')
+          this.renderables.splice(r, 1)
+    this.render()
   }
   Client.prototype.render = function (data) {
-    c.clearRect(0, 0, canvas.width, canvas.height)
-    for(var r in renderables)
-      if(renderables[r] instanceof Renderable)
-        renderables[r].render(c)
+    this.c.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    for(var r in this.renderables)
+      if(this.renderables[r] instanceof Renderable)
+        this.renderables[r].render(this.c)
   }
 })(this)

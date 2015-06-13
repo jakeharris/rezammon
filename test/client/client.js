@@ -38,7 +38,7 @@ describe('Client', function () {
       sinon.assert.calledWithExactly(socket.on, 'hero-disconnected', client.heroDisconnected)
     })
   })
-  context('handlers', function () {
+  context('on: player-connect', function () {
     before(function () {
       var sandbox, client
     })
@@ -49,44 +49,43 @@ describe('Client', function () {
       sandbox.stub(socket, 'on')
       sandbox.stub(console, 'log')
       client = new Client(socket)
+      sandbox.stub(client, 'render')
     })
     afterEach(function () {
       sandbox.restore()
     })
-    context('player-connect', function () {
-      it('throws a SyntaxError if nothing was passed', function () {
-        assert.throws(function () {
-          client.playerConnect()
-        }, SyntaxError)
-      })
-      it('throws a TypeError if the passed value is not an object', function () {
-        assert.throws(function () {
-          client.playerConnect(3)
-        }, TypeError)
-      })
-      it('throws a SyntaxError if an object is passed, but its id value isn\'t set', function () {
-        assert.throws(function () {
-          client.playerConnect({ name: '32' })
-        }, SyntaxError)
-      })
-      it('prints the id if it gets one', function () {
-        client.playerConnect({ id: '3' })
-        sinon.assert.calledOnce(console.log)
-        sinon.assert.calledWith(console.log, '3')
-      })
-      it('pushes a Text object to renderables if the player isn\'t the Hero', function () {
-        assert(client.renderables.length == 0)
-        client.playerConnect({ id: '3' })
-        assert(client.renderables.length > 0)
-      })
-      it('renders everything', function () {
-        sinon.spy(client.render)
-        client.playerConnect({ id: '3' })
-        sinon.assert.calledOnce(client.render)
-      })
+    it('throws a SyntaxError if nothing was passed', function () {
+      assert.throws(function () {
+        client.playerConnect()
+      }, SyntaxError)
+    })
+    it('throws a TypeError if the passed value is not an object', function () {
+      assert.throws(function () {
+        client.playerConnect(3)
+      }, TypeError)
+    })
+    it('throws a SyntaxError if an object is passed, but its id value isn\'t set', function () {
+      assert.throws(function () {
+        client.playerConnect({ name: '32' })
+      }, SyntaxError)
+    })
+    it('prints the id if it gets one', function () {
+      client.playerConnect({ id: '3' })
+      sinon.assert.calledOnce(console.log)
+      sinon.assert.calledWith(console.log, 'connected as 3')
+    })
+    it('pushes a Text object to renderables if the player isn\'t the Hero', function () {
+      assert(client.renderables.length == 0)
+      client.playerConnect({ id: '3' })
+      assert(client.renderables.length > 0)
+    })
+    it('renders everything', function () {
+      sinon.spy(client.render)
+      client.playerConnect({ id: '3' })
+      sinon.assert.calledOnce(client.render)
     })
   })
-  context('render()', function () {
-    
+  context('on: hero-connect', function () {
+
   })
 })
