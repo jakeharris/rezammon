@@ -8,7 +8,7 @@
   // singleton
   function Client(io) {
     if(!io) throw new SyntaxError('Client constructor requires a connection-managing object parameter')
-    if(typeof io !== 'object') throw new TypeError('io parameter must be a constructor function (for a connection managing object).')
+    if(typeof io !== 'object') throw new TypeError('io parameter must be a connection managing object.')
     
     this.socket = io
     this.canvas = document.getElementById('c')
