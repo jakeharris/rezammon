@@ -18,10 +18,10 @@
     this.isHero = false
     this.renderables = []
     
-    this.socket.on('player-connect', this.playerConnect)
-    this.socket.on('hero-connect', this.heroConnect)
-    this.socket.on('hero-connected', this.heroConnected)
-    this.socket.on('hero-disconnected', this.heroDisconnected)
+    this.socket.on('player-connect', this.playerConnect.bind(this))
+    this.socket.on('hero-connect', this.heroConnect.bind(this))
+    this.socket.on('hero-connected', this.heroConnected.bind(this))
+    this.socket.on('hero-disconnected', this.heroDisconnected.bind(this))
     
     window.addEventListener('unload', function () {
       this.socket.disconnect()
@@ -82,7 +82,7 @@
           return false
       }
       this.socket.emit('hero-move', { direction: direction })
-    })
+    }.bind(this))
   }
   Client.prototype.heroConnected = function (data) {
     this.renderables.push(
