@@ -16,12 +16,12 @@
     
     this.id = null
     this.isHero = false
-    this.renderables = []
+    this.renderables = new Array(0)
     
-    this.socket.on('player-connect', this.playerConnect.bind(this))
-    this.socket.on('hero-connect', this.heroConnect.bind(this))
-    this.socket.on('hero-connected', this.heroConnected.bind(this))
-    this.socket.on('hero-disconnected', this.heroDisconnected.bind(this))
+    this.socket.on('player-connect', this.playerConnect)
+    this.socket.on('hero-connect', this.heroConnect)
+    this.socket.on('hero-connected', this.heroConnected)
+    this.socket.on('hero-disconnected', this.heroDisconnected)
     
     window.addEventListener('unload', function () {
       this.socket.disconnect()
@@ -30,9 +30,9 @@
   
   
   Client.prototype.playerConnect = function (data) {
-    if(!data) throw new SyntaxError()
-    if(typeof data !== 'object') throw new TypeError()
-    if(data.id === undefined) throw new SyntaxError()
+    if(!data) throw new SyntaxError('No data object was given. All event handlers require a data object from the server.')
+    if(typeof data !== 'object') throw new TypeError('data parameter wasn\'t an object. ' + data)
+    if(data.id === undefined) throw new SyntaxError('Received a data object with no id, so we can\'t do our work.')
     this.id = data.id
     console.log('connected as ' + this.id)
     if(!this.isHero) {
@@ -49,14 +49,13 @@
   }
   Client.prototype.heroConnect = function (data) {
     this.isHero = true
-    this.renderables.push(
-      new Text({
+    var text = new Text({
         fillStyle: '#6f4',
         text: 'u r the hero',
         x: 100,
         y: 100
-      })
-    )
+    })
+    this.renderables.push(text)
     for(var r in this.renderables) {
       if(this.renderables[r] instanceof Text)
         if(this.renderables[r].text === 'u r not the hero')
@@ -120,4 +119,10 @@
       if(this.renderables[r] instanceof Renderable)
         this.renderables[r].render(this.c)
   }
+  
+  Client.prototype.playerConnect
+  Client.prototype.heroConnect
+  Client.prototype.heroConnected
+  Client.prototype.heroDisconnected
+  Client.prototype.render
 })(this)
