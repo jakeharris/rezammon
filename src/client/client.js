@@ -47,22 +47,21 @@
     }
     this.render()
   }
-  Client.prototype.heroConnect = function (data) {
+  Client.prototype.heroConnect = function () {
     this.isHero = true
-    var text = new Text({
+    this.renderables.push(new Text({
         fillStyle: '#6f4',
         text: 'u r the hero',
         x: 100,
         y: 100
-    })
-    this.renderables.push(text)
+    }))
     for(var r in this.renderables) {
       if(this.renderables[r] instanceof Text)
         if(this.renderables[r].text === 'u r not the hero')
           this.renderables.splice(r, 1)
     }
     this.render()
-    $(window).on('keydown', function (e) {
+    window.addEventListener('keydown', function (e) {
       var direction
       switch(e.keyCode) {
         case 37:

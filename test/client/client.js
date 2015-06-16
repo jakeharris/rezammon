@@ -96,6 +96,28 @@ describe('Client', function () {
     })
   })
   context('on: hero-connect', function () {
-
+    before(function () {
+      var client, sockstub
+    })
+    beforeEach(function () {
+      sockstub = sinon.stub(socket, 'on')
+      
+      client = new Client(socket)
+    })
+    afterEach(function () {
+      sockstub.restore()
+    })
+    it('sets itself as the hero', function () {
+      assert(!client.isHero)
+      client.heroConnect()
+      assert(client.isHero)
+    })
+    it('hooks up the key listener', function () {
+      sinon.spy(window, 'addEventListener')
+      var c = window.addEventListener.callCount
+      client.heroConnect()
+      assert(window.addEventListener.callCount === c + 1)
+      window.addEventListener.restore()
+    })
   })
 })
