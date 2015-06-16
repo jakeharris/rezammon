@@ -2,6 +2,7 @@
   <head>
     <title> Tests </title>
     <base href="../../">
+    <meta charset="utf-8">
     <link rel="stylesheet" href="node_modules/mocha/mocha.css" />
   </head>
   <body>
@@ -14,6 +15,7 @@
       mocha.reporter('html');
       var assert = chai.assert;
     </script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/socket.io-1.3.5/index.js"></script>
     <canvas id="c"></canvas>
     <script src="src/client/renderable.js"></script>
