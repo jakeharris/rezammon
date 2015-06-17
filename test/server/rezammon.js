@@ -1,5 +1,6 @@
 var assert = require('assert'),
     ParameterCountError = require('../../src/errors').ParameterCountError,
+    MissingHeroError = require('../../src/errors').MissingHeroError,
     RezammonGame = require('../../src/server/rezammon'),
     SocketIOAdapter = require('../../src/server/socket-io-adapter'),
     http = require('http'),
@@ -91,5 +92,97 @@ describe('RezammonGame', function () {
       assert(setHero)
     })
     it('chooses the RIGHT player to become the Hero')
+  })
+  context('move()', function () {
+    it('throws a ParameterCountError if no parameters are supplied', function () {
+      assert.throws(function () {
+        game.move()
+      }, ParameterCountError)
+    })
+    it('throws a TypeError if a direction parameter is supplied, but it\'s not a string', function () {
+      assert.throws(function () {
+        game.move({ m: 'ilieu' })
+      }, TypeError)
+    })
+    it('throws a SyntaxError if a string is specified, but it\'s not a valid direction', function () {
+      assert.throws(function () {
+        game.move('milieu')
+      }, SyntaxError)
+    })
+    it('throws a MissingHeroError if no actor ID was specified, and no Hero exists', function () {
+      assert.throws(function () {
+        game.move('left')
+      }, MissingHeroError)
+    })
+    it('doesn\'t throw an error if a direction is correctly specified', function () {
+      game.server.addPlayer('milieu')
+      game.chooseHero()
+      assert.doesNotThrow(function () {
+        game.move('left')
+      })
+    })
+    it('moves the Hero as expected if a direction is correctly specified', function () {
+      var x,
+          xf,
+          y,
+          yf
+      
+      game.server.addPlayer('milieu')
+      game.chooseHero()
+      
+      x = game.players['milieu'].getX()
+      xf = -1
+      
+      game.move('left')
+      
+      assert.notEqual(xf, -1)
+      assert.notEqual(x, xf)
+      assert.equal(x, xf + 1)
+      
+      x = game.players['milieu'].getX()
+      xf = -1
+      
+      game.move('right')
+      
+      assert.notEqual(xf, -1)
+      assert.notEqual(x, xf)
+      assert.equal(x, xf - 1)
+      
+      y = game.players['milieu'].getY()
+      yf = -1
+      
+      game.move('up')
+      
+      assert.notEqual(yf, -1)
+      assert.notEqual(y, yf)
+      assert.equal(y, yf - 1)
+      
+      y = game.players['milieu'].getY()
+      yf = -1
+      
+      game.move('down')
+      
+      assert.notEqual(yf, -1)
+      assert.notEqual(y, yf)
+      assert.equal(y, yf + 1)
+    })
+    it('throws a TypeError if an actor parameter is also supplied, but it is not a string', function () {
+      assert.throws(function () {
+        game.move('left', { m: 'ilieu' })
+      }, TypeError)
+    })
+    it('throws a RangeError if an actor ID is supplied, but no players exist', function () {
+      assert.throws(function () {
+        game.move('left', 'milieu')
+      }, RangeError)
+    })
+    it('throws a RangeError if an actor ID is supplied, but the ID isn\'t a player\'s ID', function () {
+      game.server.addPlayer('fjf193')
+      assert.throws(function () {
+        game.move('left', 'milieu')
+      }, SyntaxError)
+    })
+    it('moves the specified actor as expected if a direction is correctly specified')
+    it('fails to move the specified actor if the actor is against a boundary and can\'t move in that direction')
   })
 })
