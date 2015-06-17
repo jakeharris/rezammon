@@ -19,11 +19,13 @@ function RezammonGame (server) {
 RezammonGame.prototype = Object.create(Controller.prototype)
 RezammonGame.prototype.constructor = RezammonGame
 RezammonGame.prototype.createServerAdapter = function (server) {
-  if(server === undefined)
+  if(!server)
     throw new ParameterCountError('Rezammon configuration requires a WebSockets implementation.')
   if(!(server instanceof SocketIOServer))
-    throw new TypeError('Interface parameter not of expected type; expected ' 
-                        + SocketIOServer + ', received ' + server)
+    throw new TypeError('Interface parameter not of supported type.\n'
+                        + 'Supported types include: \n' 
+                        + '\t\u2022 ' + SocketIOServer + '\n'
+                        + ', received ' + server)
     
   switch(server.constructor.name) {
     case 'Server': // socket.io
