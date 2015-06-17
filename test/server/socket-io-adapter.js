@@ -89,6 +89,49 @@ describe('SocketIOAdapter', function () {
         server.addPlayer('0')
       })
     })
+    it('should return the number of connected players', function () {
+      assert.equal(server.addPlayer('0'), 1)
+      assert.equal(server.addPlayer('1'), 2)
+      assert.equal(server.addPlayer('milieu'), 3)
+    })
+  })
+  context('removePlayer()', function () {
+    it('throws a ParameterCountError if no parameter is supplied', function () {
+      assert.throws(function () {
+        server.removePlayer()
+      }, ParameterCountError)
+    })
+    it('throws a TypeError if an ID is supplied, but it isn\'t a string', function () {
+      assert.throws(function () {
+        server.removePlayer({ m: 'ilieu' })
+      }, TypeError)
+    })
+    it('throws a RangeError if an ID is supplied, but no players exist', function () {
+      assert.throws(function () {
+        server.removePlayer('milieu')
+      }, RangeError, /No players are connected./)
+    })
+    it('throws a RangeError if an ID is supplied and players exist, but none have the supplied ID', function () {
+      server.addPlayer('0')
+      server.addPlayer('1')
+      assert.throws(function () {
+        server.removePlayer('milieu')
+      }, RangeError, /No player exists with id:/)
+    })
+    it('should not throw an error if the parameters were proper and players existed', function () {
+      server.addPlayer('0')
+      server.addPlayer('1')
+      server.addPlayer('milieu')
+      assert.doesNotThrow(function () {
+        server.removePlayer('milieu')
+      })
+    })
+    it('should return the number of remaining connected players', function () {
+      server.addPlayer('0')
+      server.addPlayer('1')
+      server.addPlayer('milieu')
+      assert.equal(server.removePlayer('milieu'), 2)
+    })
   })
   context('isHero()', function () {
     beforeEach(function () {
