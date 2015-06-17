@@ -66,4 +66,30 @@ describe('RezammonGame', function () {
       assert(game.getHeroID() === '0')
     })
   })
+  context('chooseHero()', function () {
+    it('throws an Error if no players are connected', function () {
+      assert.throws(function () {
+        game.chooseHero()
+      }, Error)
+    })
+    it('chooses an extant player to become the Hero', function () {
+      server = game.server
+      
+      server.addPlayer('milieu')
+      game.chooseHero()
+      assert.equal(game.getHeroID(), 'milieu')
+      
+      server.addPlayer('f9a1af')
+      server.addPlayer('fjfaiiz91')
+      game.chooseHero()
+      
+      var setHero = false
+      for(var p of game.players)
+        if(p === game.getHeroID())
+          setHero = true
+          
+      assert(setHero)
+    })
+    it('chooses the RIGHT player to become the Hero')
+  })
 })
