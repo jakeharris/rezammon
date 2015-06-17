@@ -18,10 +18,10 @@
     this.isHero = false
     this.renderables = new Array(0)
     
-    this.socket.on('player-connect', this.playerConnect)
-    this.socket.on('hero-connect', this.heroConnect)
-    this.socket.on('hero-connected', this.heroConnected)
-    this.socket.on('hero-disconnected', this.heroDisconnected)
+    this.socket.on('player-connect', this.playerConnect.bind(this))
+    this.socket.on('hero-connect', this.heroConnect.bind(this))
+    this.socket.on('hero-connected', this.heroConnected.bind(this))
+    this.socket.on('hero-disconnected', this.heroDisconnected.bind(this))
     
     window.addEventListener('unload', function () {
       this.socket.disconnect()
@@ -33,8 +33,8 @@
     if(!data) throw new SyntaxError('No data object was given. All event handlers require a data object from the server.')
     if(typeof data !== 'object') throw new TypeError('data parameter wasn\'t an object. ' + data)
     if(data.id === undefined) throw new SyntaxError('Received a data object with no id, so we can\'t do our work.')
+    
     this.id = data.id
-    console.log('connected as ' + this.id)
     if(!this.isHero) {
       this.renderables.push(
         new Text({
@@ -46,6 +46,8 @@
       )
     }
     this.render()
+    
+    console.log('connected as ' + this.id)
   }
   Client.prototype.heroConnect = function () {
     this.isHero = true

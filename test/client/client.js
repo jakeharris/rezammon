@@ -23,22 +23,22 @@ describe('Client', function () {
     })
     it('sets the player-connect handler', function () {
       client = new Client(socket)
-      assert(sockstub.calledWithExactly('player-connect', client.playerConnect))
+      assert(sockstub.calledWith('player-connect'))
     })
     it('sets the hero-connect handler', function () {
       client = new Client(socket)
-      assert(sockstub.calledWithExactly('hero-connect', client.heroConnect))
+      assert(sockstub.calledWith('hero-connect'))
     })
     it('sets the hero-connected handler', function () {
       client = new Client(socket)
-      assert(sockstub.calledWithExactly('hero-connected', client.heroConnected))
+      assert(sockstub.calledWith('hero-connected'))
     })
     it('sets the hero-disconnected handler', function () {
       client = new Client(socket)
-      assert(sockstub.calledWithExactly('hero-disconnected', client.heroDisconnected))
+      assert(sockstub.calledWith('hero-disconnected'))
     })
   })
-  context('on: player-connect', function () {
+  context('on player-connect', function () {
     before(function () {
       var client, sockstub
     })
@@ -75,8 +75,7 @@ describe('Client', function () {
       sinon.stub(console, 'log')
       var c = console.log.callCount
       client.playerConnect({ id: '3' })
-      assert(console.log.callCount === c + 1)
-      assert(console.log.calledWith, 'connected as 3')
+      assert(console.log.calledWith('connected as 3'))
       console.log.restore()
     })
     it('pushes a Text object to renderables if the player isn\'t the Hero', function () {
@@ -95,7 +94,7 @@ describe('Client', function () {
       console.log.restore()
     })
   })
-  context('on: hero-connect', function () {
+  context('on hero-connect', function () {
     before(function () {
       var client, sockstub
     })
