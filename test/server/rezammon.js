@@ -76,17 +76,17 @@ describe('RezammonGame', function () {
       server = game.server
       
       server.addPlayer('milieu')
-      game.chooseHero()
-      assert.equal(game.getHeroID(), 'milieu')
+      assert.equal(game.chooseHero(), 'milieu')
       
       server.addPlayer('f9a1af')
       server.addPlayer('fjfaiiz91')
       game.chooseHero()
       
       var setHero = false
-      for(var p of game.players)
+      for(var p in game.players) {
         if(p === game.getHeroID())
           setHero = true
+      }
           
       assert(setHero)
     })
