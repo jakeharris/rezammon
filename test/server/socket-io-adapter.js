@@ -9,7 +9,7 @@ var assert = require('assert'),
 
 describe('SocketIOAdapter', function () {
   beforeEach(function () {
-    io = Server(http)
+    io = new Server(http)
     game = new RezammonGame(io)
     server = new SocketIOAdapter(io, game, true) //third param is optional, is true if testing
   })
@@ -41,10 +41,10 @@ describe('SocketIOAdapter', function () {
     })
   })
   context('hasConnectedHero()', function () {
-    it('should be able to tell if we don\'t have a Hero socket configured', function () {
+    it('can tell if we don\'t have a Hero socket configured', function () {
       assert.equal(false, server.hasConnectedHero())
     })
-    it('should be able to tell if we do have a Hero socket configured', function () {
+    it('can tell if we do have a Hero socket configured', function () {
       server.setHero('0')
       assert(server.hasConnectedHero())
     })
@@ -53,7 +53,7 @@ describe('SocketIOAdapter', function () {
     beforeEach(function () {
       server = new SocketIOAdapter(io, game, true)
     })
-    it('should throw a ConfiguredHeroError if there\'s already a Hero (even if the Hero\'s ID is the submitted ID)', function () {
+    it('throws a ConfiguredHeroError if there\'s already a Hero (even if the Hero\'s ID is the submitted ID)', function () {
       server.setHero('0')
       assert.throws(function () {
         server.setHero('0')
@@ -66,7 +66,7 @@ describe('SocketIOAdapter', function () {
       assert(server.hasConnectedHero())
       assert(server.isHero('0'))
     })
-    it('should be able to set a socket up as a Hero socket if there isn\'t one', function () {
+    it('can set a socket up as a Hero socket if there isn\'t one', function () {
       assert(!server.hasConnectedHero())
       server.setHero('0')
       assert(server.hasConnectedHero())
@@ -74,22 +74,22 @@ describe('SocketIOAdapter', function () {
     })
   })
   context('addPlayer()', function () {
-    it('should throw a ParameterCountError if no id was supplied', function () {
+    it('throws a ParameterCountError if no id was supplied', function () {
       assert.throws(function () {
         server.addPlayer()
       }, ParameterCountError)
     })
-    it('should throw a TypeError if the supplied id was not a string', function () {
+    it('throws a TypeError if the supplied id was not a string', function () {
       assert.throws(function () {
         server.addPlayer({ foo: 'bar' })
       }, TypeError)
     })
-    it('should not throw an error if the parameters were proper', function () {
+    it('doesn\'t throw an Error if the parameters were proper', function () {
       assert.doesNotThrow(function () {
         server.addPlayer('0')
       })
     })
-    it('should return the number of connected players', function () {
+    it('returns the number of connected players', function () {
       assert.equal(server.addPlayer('0'), 1)
       assert.equal(server.addPlayer('1'), 2)
       assert.equal(server.addPlayer('milieu'), 3)
@@ -118,7 +118,7 @@ describe('SocketIOAdapter', function () {
         server.removePlayer('milieu')
       }, RangeError, /No player exists with id:/)
     })
-    it('should not throw an error if the parameters were proper and players existed', function () {
+    it('doesn\'t throw an error if the parameters were proper and players existed', function () {
       server.addPlayer('0')
       server.addPlayer('1')
       server.addPlayer('milieu')
@@ -126,7 +126,7 @@ describe('SocketIOAdapter', function () {
         server.removePlayer('milieu')
       })
     })
-    it('should return the number of remaining connected players', function () {
+    it('returns the number of remaining connected players', function () {
       server.addPlayer('0')
       server.addPlayer('1')
       server.addPlayer('milieu')
@@ -138,26 +138,26 @@ describe('SocketIOAdapter', function () {
       server = new SocketIOAdapter(io, game, true)
       server.setHero('0')
     })
-    it('should throw a ParameterCountError if no id was supplied', function () {
+    it('throws a ParameterCountError if no id was supplied', function () {
       assert.throws(function () {
         server.isHero()
       }, ParameterCountError)
     })
-    it('should throw a TypeError if the supplied id was not a string', function () {
+    it('throws a TypeError if the supplied id was not a string', function () {
       assert.throws(function () {
         server.isHero(123)
       }, TypeError)
     })
-    it('should throw a MissingHeroError if there is no Hero', function () {
+    it('throws a MissingHeroError if there is no Hero', function () {
       assert.throws(function () {
         server = new SocketIOAdapter(io, game, true)
         server.isHero('0')
       }, MissingHeroError)
     })
-    it('should be able to determine that a given socket is the Hero', function () {
+    it('can determine that a given socket is the Hero', function () {
       assert(server.isHero('0'))
     })
-    it('should be able to determine that a given socket is not the Hero', function () {
+    it('can determine that a given socket is not the Hero', function () {
       assert(!server.isHero('3'))
     })
   })

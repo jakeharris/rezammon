@@ -3,44 +3,56 @@ var assert = require('assert'),
     RezammonGame = require('../../src/server/rezammon'),
     SocketIOAdapter = require('../../src/server/socket-io-adapter'),
     http = require('http'),
-    io = require('socket.io')
+    Server = require('socket.io')
 
 describe('RezammonGame', function () {
+  beforeEach(function () {
+    io = new Server(http)
+    game = new RezammonGame(io)
+    server = new SocketIOAdapter(io, game, true) //third param is optional, is true if testing
+  })
   context('constructor', function () {
-    beforeEach(function () {
-      _server = io(http)
-    })
-    it('should throw a ParameterCountError if no parameter is supplied', function () {
+    it('throws a ParameterCountError if no parameter is supplied', function () {
       assert.throws(function () {
-        var game = new RezammonGame()
+        game = new RezammonGame()
       }, ParameterCountError)
     })
-    it('should throw a TypeError if the server parameter is not a supported server type', function () {
+    it('throws a TypeError if the server parameter is not a supported server type', function () {
       assert.throws(function () {
-        var game = new RezammonGame({ m: 'ilieu' })
+        game = new RezammonGame({ m: 'ilieu' })
       }, TypeError)
     })
-    it('should create a RezammonGame if the server parameter is proper', function () {
+    it('creates a RezammonGame if the server parameter is proper', function () {
       assert.doesNotThrow(function () {
-        var game = new RezammonGame(_server)
+        game = new RezammonGame(io)
+      })
+    })
+  })
+  context('createServerAdapter()', function () {
+    it('throws a ParameterCountError if no server parameter was supplied', function () {
+      assert.throws(function () {
+        game.createServerAdapter()
+      }, ParameterCountError)
+    })
+    it('throws a TypeError if the server parameter is not a supported type', function () {
+      assert.throws(function () {
+        game.createServerAdapter({ m: 'ilieu' })
+      }, TypeError)
+    })
+    it('doesn\'t throw an error otherwise', function () {
+      assert.doesNotThrow(function () {
+        game.createServerAdapter(io)
       })
     })
   })
   context('getHeroID()', function () {
-    before(function () {
-      _server = io(http)
-      game = new RezammonGame(_server)
-      server = game.server
-    })
     beforeEach(function () {
-      _server = io(http)
-      game = new RezammonGame(_server)
       server = game.server
     })
     it('throws an Error if no players are connected', function () {
       assert.throws(function () {
         game.getHeroID()
-      })
+      }, Error)
     })
     it('returns the Hero\'s ID if there is a Hero', function () {
       server.addPlayer('0')
