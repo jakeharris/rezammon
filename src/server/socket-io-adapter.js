@@ -53,12 +53,19 @@ SocketIOAdapter.prototype.addPlayer = function (id) {
   if(!id) throw new ParameterCountError()
   if(!(typeof id === 'string')) throw new TypeError()
   
-  this.game.players.push(new Player(id))
-  return this.game.players.length
+  this.game.players[id] = (new Player(id))
+  return Object.keys(this.game.players).length
 }
 SocketIOAdapter.prototype.removePlayer = function (id) {
-  this.game.removePlayer(id)
+  if(!id) throw new ParameterCountError('No ID was supplied.')
+  if(typeof id !== 'string') throw new TypeError('ID supplied was not a string')
+  if(this.game.players.length < 1) throw new RangeError('No players are connected.')
+  if(!this.game.players[id]) throw new RangeError('No player exists with id: ' + id + '.')
+  
+  delete this.game.players[id]
+  return Object.keys(this.game.players).length
 }
+
 SocketIOAdapter.prototype.configureServer = function () {
   this.server.on('connection', function (socket) {
     'use strict';
@@ -71,7 +78,7 @@ SocketIOAdapter.prototype.configureServer = function () {
     /// a hero, and assign one if necessary
     if(!this.hasConnectedHero())
       this.setHero(this.getHeroID())
-    
+      
     socket.emit('player-connect', { id: socket.id })
     this.server.emit('player-connected')
     
@@ -79,7 +86,7 @@ SocketIOAdapter.prototype.configureServer = function () {
     console.log('%%%%% USER CONNECTED %%%%%')
     console.log('id: ' + socket.id)
     console.log('isHero: ' + this.isHero(socket.id))
-    console.log('players: ' + this.server.sockets.connected.length)
+    console.log('players: ' + this.server.sockets.connected)
     console.log()
     
     /// configure the socket to respond to 
@@ -100,7 +107,7 @@ SocketIOAdapter.prototype.configureServer = function () {
       console.log('disconnect')
     }.bind(this, socket))
     
-    socket.on('hero-move', function (data) {
+    socket.on('hero-move', function (socket, data) {
       try {
         if(!this.isHero(socket.id))
           throw new ConfiguredHeroError(
@@ -108,6 +115,7 @@ SocketIOAdapter.prototype.configureServer = function () {
             + '(Hero ID: ' + this.getHeroID() + ', '
             + 'player ID: ' + socket.id + '.)')
         else {
+          console.log(data)
           this.game.move(data.direction)
           this.server.emit('hero-moved', this.game.getHeroLocation())
         }
@@ -118,7 +126,7 @@ SocketIOAdapter.prototype.configureServer = function () {
       }
       
       
-    })
+    }.bind(this, socket))
     
   }.bind(this))
 }
@@ -128,7 +136,15 @@ SocketIOAdapter.prototype.getSocket = function (id) {
   return this.server.sockets.connected[id]
 }
 SocketIOAdapter.prototype.getHeroID = function () {
+  var id
   if(!this.hasConnectedHero())
-    return this.game.chooseHero()
+    try {
+      id = this.game.getHeroID()
+      return id
+    }
+    catch (e) {
+      console.error(e.message)
+      return null
+    }
   else return this.heroID
 }
