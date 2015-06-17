@@ -42,9 +42,17 @@ RezammonGame.prototype.getHeroID = function () {
   if(Object.keys(this.players).length < 1)
     throw new Error('No players are connected; choosing a hero is impossible.')
   if(!this.hero)
-    return Object.keys(this.players)[0]
+    return this.chooseHero()
   else
     return this.hero.id
+}
+RezammonGame.prototype.chooseHero = function () {
+  if(Object.keys(this.players).length < 1)
+    throw new Error('No players are connected; choosing a hero is impossible.')
+  
+  this.hero = new Player(Object.keys(this.players)[0])
+    
+  return this.hero.id
 }
 RezammonGame.prototype.move = function (direction) {
   if(!direction) throw new ParameterCountError('Asking the Hero to move requires a direction.')
