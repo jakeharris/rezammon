@@ -11,5 +11,5 @@ Controller.prototype.createServerAdapter = function (server) {
   throw new NotImplementedError(
     'Controller is not intended to be implemented '
     + 'directly. Override createServerAdapter() '
-    + 'function in the inheriting class.')
+    + 'in the inheriting class.')
 }
