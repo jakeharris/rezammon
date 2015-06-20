@@ -100,11 +100,15 @@ describe('RezammonGame', function () {
       }, ParameterCountError)
     })
     it('throws a TypeError if a direction parameter is supplied, but it\'s not a string', function () {
+      game.server.addPlayer('milieu')
+      game.chooseHero()
       assert.throws(function () {
         game.move({ m: 'ilieu' })
       }, TypeError)
     })
     it('throws a SyntaxError if a string is specified, but it\'s not a valid direction', function () {
+      game.server.addPlayer('milieu')
+      game.chooseHero()
       assert.throws(function () {
         game.move('milieu')
       }, SyntaxError)
@@ -130,39 +134,43 @@ describe('RezammonGame', function () {
       game.server.addPlayer('milieu')
       game.chooseHero()
       
-      x = game.players['milieu'].getX()
-      xf = -1
+      x = game.hero.x
+      xf = null
       
       game.move('left')
+      xf = game.hero.x
       
-      assert.notEqual(xf, -1)
+      assert.notEqual(xf, null)
       assert.notEqual(x, xf)
       assert.equal(x, xf + 1)
       
-      x = game.players['milieu'].getX()
-      xf = -1
+      x = game.hero.x
+      xf = null
       
       game.move('right')
+      xf = game.hero.x
       
-      assert.notEqual(xf, -1)
+      assert.notEqual(xf, null)
       assert.notEqual(x, xf)
       assert.equal(x, xf - 1)
       
-      y = game.players['milieu'].getY()
-      yf = -1
+      y = game.hero.y
+      yf = null
       
       game.move('up')
+      yf = game.hero.y
       
-      assert.notEqual(yf, -1)
+      assert.notEqual(yf, null)
       assert.notEqual(y, yf)
       assert.equal(y, yf - 1)
       
-      y = game.players['milieu'].getY()
-      yf = -1
+      y = game.hero.y
+      yf = null
       
       game.move('down')
+      yf = game.hero.y
       
-      assert.notEqual(yf, -1)
+      assert.notEqual(yf, null)
       assert.notEqual(y, yf)
       assert.equal(y, yf + 1)
     })
@@ -180,7 +188,7 @@ describe('RezammonGame', function () {
       game.server.addPlayer('fjf193')
       assert.throws(function () {
         game.move('left', 'milieu')
-      }, SyntaxError)
+      }, RangeError)
     })
     it('moves the specified actor as expected if a direction is correctly specified')
     it('fails to move the specified actor if the actor is against a boundary and can\'t move in that direction')
