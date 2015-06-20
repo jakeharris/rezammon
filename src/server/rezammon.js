@@ -3,7 +3,9 @@
 module.exports = RezammonGame
 
 var Player = require('./player'),
+    Hero = require('./hero'),
     ParameterCountError = require('../errors').ParameterCountError,
+    MissingHeroError = require('../errors').MissingHeroError,
     SocketIOAdapter = require('./socket-io-adapter'),
     SocketIOServer = require('socket.io'),
     Controller = require('./controller')
@@ -50,27 +52,19 @@ RezammonGame.prototype.chooseHero = function () {
   if(Object.keys(this.players).length < 1)
     throw new Error('No players are connected; choosing a hero is impossible.')
   
-  this.hero = new Player(Object.keys(this.players)[0])
+  this.hero = new Hero(Object.keys(this.players)[0])
     
   return this.hero.id
 }
-RezammonGame.prototype.move = function (direction) {
+RezammonGame.prototype.move = function (direction, actorID) {
   if(!direction) throw new ParameterCountError('Asking the Hero to move requires a direction.')
-  if(!this.getHero()) throw new MissingHeroError('There must be a Hero in order for the Hero to move.')
-  switch(direction) {
-    case 'left':
-      this.hero.move('left')
-      break
-    case 'up':
-      this.hero.move('up')
-      break
-    case 'right':
-      this.hero.move('right')
-      break
-    case 'down':
-      this.hero.move('down')
-      break
-    default:
-      throw new TypeError('Invalid direction parameter supplied.')
+  if(!actorID && !this.hero) throw new MissingHeroError('There must be a Hero in order for the Hero to move.')
+  if(actorID && typeof actorID !== 'string') throw new TypeError('The Actor ID must be a string.')
+  
+  if(actorID) {
+    if(this.players.length < 1) throw new RangeError('Players must be exist in order for one to move.')
+    if(!this.players[actorID]) throw new RangeError('The Actor ID must belong to an extant Player.')
+    /* actor.move() */
   }
+  else this.hero.move(direction)
 }
