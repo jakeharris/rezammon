@@ -22,6 +22,7 @@
     this.socket.on('hero-connect', this.heroConnect.bind(this))
     this.socket.on('hero-connected', this.heroConnected.bind(this))
     this.socket.on('hero-disconnected', this.heroDisconnected.bind(this))
+    this.socket.on('hero-moved', this.heroMoved.bind(this))
     
     window.addEventListener('unload', function () {
       this.socket.disconnect()
@@ -42,6 +43,16 @@
           text: 'u r not the hero',
           x: 100,
           y: 100
+        })
+      )
+    }
+    if(data.hero) {
+      this.renderables.push(
+        new FilledCircle({
+          x: data.hero.x,
+          y: data.hero.y,
+          radius: 10,
+          fillStyle: '#faaa42'
         })
       )
     }
@@ -85,14 +96,6 @@
     }.bind(this))
   }
   Client.prototype.heroConnected = function (data) {
-    this.renderables.push(
-      new FilledCircle({
-        x: 50,
-        y: 50,
-        radius: 10,
-        fillStyle: '#faaa42'
-      })
-    )
     for(var r in this.renderables)
       if(this.renderables[r] instanceof Text)
         if(this.renderables[r].text === 'the hero just left.')
@@ -114,6 +117,15 @@
           this.renderables.splice(r, 1)
     this.render()
   }
+  Client.prototype.heroMoved = function (data) {
+    for(var r in this.renderables)
+      if(this.renderables[r] instanceof FilledCircle)
+        if(this.renderables[r].radius === 10) {
+          this.renderables[r].x = data.x
+          this.renderables[r].y = data.y
+        }
+    this.render()
+  }
   Client.prototype.render = function (data) {
     this.c.clearRect(0, 0, this.canvas.width, this.canvas.height)
     for(var r in this.renderables)
@@ -121,9 +133,4 @@
         this.renderables[r].render(this.c)
   }
   
-  Client.prototype.playerConnect
-  Client.prototype.heroConnect
-  Client.prototype.heroConnected
-  Client.prototype.heroDisconnected
-  Client.prototype.render
 })(this)
