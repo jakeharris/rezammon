@@ -5,9 +5,13 @@ var assert = require('assert'),
 
 describe('Actor', function () {
   context('constructor', function () {
-    it('has Entity in its prototype chain', function () {
+    it('creates an Actor with Entity in its prototype chain', function () {
       var a = new Actor()
       assert(a instanceof Entity)
+    })
+    it('creates an Actor with a positive health value', function () {
+      var a = new Actor()
+      assert(a.health)
     })
   })
   context('move()', function () {
