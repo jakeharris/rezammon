@@ -1,4 +1,5 @@
 'using strict';
+
 module.exports = SocketIOAdapter
 
 var ServerAdapter = require('./server-adapter'),
@@ -64,6 +65,19 @@ SocketIOAdapter.prototype.removePlayer = function (id) {
   
   delete this.game.players[id]
   return Object.keys(this.game.players).length
+}
+SocketIOAdapter.prototype.emitHealth = function (health, maxHealth) {
+  if(!health) throw new ParameterCountError()
+  if(!(typeof health === 'number')) throw new TypeError()
+  if(maxHealth && typeof maxHealth !== 'number') throw new TypeError()
+  if(!maxHealth) maxHealth = 10
+  
+  var opts = {
+    maxHealth: maxHealth,
+    health: health
+  }
+  
+  this.server.emit('hero-health-changed', opts)
 }
 
 SocketIOAdapter.prototype.configureServer = function () {
@@ -148,7 +162,6 @@ SocketIOAdapter.prototype.configureServer = function () {
       
       
     }.bind(this, socket))
-    
   }.bind(this))
 }
 SocketIOAdapter.prototype.getSocket = function (id) {
