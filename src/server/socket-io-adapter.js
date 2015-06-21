@@ -137,7 +137,6 @@ SocketIOAdapter.prototype.configureServer = function () {
             + '(Hero ID: ' + this.getHeroID() + ', '
             + 'player ID: ' + socket.id + '.)')
         else {
-          console.log(data)
           this.game.move(data.direction)
           this.server.emit('hero-moved', { x: this.game.hero.x, y: this.game.hero.y })
         }
