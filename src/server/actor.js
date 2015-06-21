@@ -10,6 +10,8 @@ function Actor (opts) {
   if(typeof opts !== 'object') throw new TypeError('Actors only take an options object as a parameter.')
   
   Entity.call(this, opts)
+  
+  this.health = 10
 }
 
 Actor.prototype = Object.create(Entity.prototype)
