@@ -43,10 +43,10 @@ RezammonGame.prototype.getHeroID = function () {
   //TODO: flesh this out. needs to pick based on bias
   if(Object.keys(this.players).length < 1)
     throw new Error('No players are connected; choosing a hero is impossible.')
-  if(!this.hero)
-    return this.chooseHero()
-  else
+  if(this.hero && this.hero.id)
     return this.hero.id
+  else
+    return this.chooseHero()
 }
 RezammonGame.prototype.chooseHero = function () {
   if(Object.keys(this.players).length < 1)

@@ -40,12 +40,12 @@ SocketIOAdapter.prototype.setHero = function (id) {
   }
   catch (e) {
     if(!this.isTesting) console.error(e.message)
+    this.heroID = null
   }
 }
 SocketIOAdapter.prototype.isHero = function (id) {
   if(!id) throw new ParameterCountError()
   if(!(typeof id === 'string')) throw new TypeError()
-  if(!this.hasConnectedHero()) throw new MissingHeroError()
   
   return this.heroID === id
 }
@@ -59,7 +59,7 @@ SocketIOAdapter.prototype.addPlayer = function (id) {
 SocketIOAdapter.prototype.removePlayer = function (id) {
   if(!id) throw new ParameterCountError('No ID was supplied.')
   if(typeof id !== 'string') throw new TypeError('ID supplied was not a string')
-  if(this.game.players.length < 1) throw new RangeError('No players are connected.')
+  if(Object.keys(this.game.players).length < 1) throw new RangeError('No players are connected.')
   if(!this.game.players[id]) throw new RangeError('No player exists with id: ' + id + '.')
   
   delete this.game.players[id]
@@ -79,32 +79,54 @@ SocketIOAdapter.prototype.configureServer = function () {
     if(!this.hasConnectedHero())
       this.setHero(this.getHeroID())
       
-    socket.emit('player-connect', { id: socket.id })
+    var opts = {
+      id: socket.id 
+    }
+    if(this.hasConnectedHero()) {
+      opts.hero = {
+        x: this.game.hero.x,
+        y: this.game.hero.y
+      }
+    }
+    socket.emit('player-connect', opts)
     this.server.emit('player-connected')
     
     // print server console data
     console.log('%%%%% USER CONNECTED %%%%%')
     console.log('id: ' + socket.id)
     console.log('isHero: ' + this.isHero(socket.id))
-    console.log('players: ' + this.server.sockets.connected)
+    console.log('players: ')
+    for(var p in this.server.sockets.connected)
+      console.log(p)
     console.log()
     
     /// configure the socket to respond to 
     /// events from the client and other
     /// sockets
     socket.on('disconnect', function () {
+      console.log('%%%%% USER DISCONNECTED %%%%%')
+      console.log('id: ' + socket.id)
+      console.log('isHero: ' + this.isHero(socket.id))
+      
+      try {
+        this.removePlayer(socket.id)
+      } catch(e) { 
+        console.error(e.message)
+      } // should perhaps ensure that the player is no longer listed?
+      
       if(this.isHero(socket.id)) {
-        this.heroID =  null
+        this.heroID = null
+        this.game.hero.id =  null
         this.server.emit('hero-disconnected')
       }
       
-      this.removePlayer(socket.id)
-        
+      console.log('hero post-disconnect: ' + this.getHeroID())
+      console.log()
+      
       if(!this.hasConnectedHero()) 
         this.setHero(this.getHeroID())
-        
+          
       this.server.emit('player-disconnected')
-      console.log('disconnect')
     }.bind(this, socket))
     
     socket.on('hero-move', function (socket, data) {
@@ -117,7 +139,7 @@ SocketIOAdapter.prototype.configureServer = function () {
         else {
           console.log(data)
           this.game.move(data.direction)
-          this.server.emit('hero-moved', this.game.getHeroLocation())
+          this.server.emit('hero-moved', { x: this.game.hero.x, y: this.game.hero.y })
         }
       }
       catch (e) {
