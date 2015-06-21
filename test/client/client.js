@@ -119,4 +119,17 @@ describe('Client', function () {
       window.addEventListener.restore()
     })
   })
+  context('on hero-health-changed', function () {
+    it('throws a SyntaxError if no x or no y value is supplied', function () {
+      assert.throws(function () {
+        client.heroMoved()
+      }, SyntaxError)
+    })
+    it('updates the health', function () {
+      sinon.stub(console, 'log')
+      client.playerConnect({ id: 'milieu', hero: { x: 1, y: 1 } })
+      assert(client.heroMoved({ x: 3, y: 4 }))
+      console.log.restore()
+    })
+  })
 })

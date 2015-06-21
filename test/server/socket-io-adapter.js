@@ -128,6 +128,33 @@ describe('SocketIOAdapter', function () {
       assert.equal(server.removePlayer('milieu'), 2)
     })
   })
+  context('emitHealth()', function () {
+    it('throws a ParameterCountError if no parameters are supplied', function () {
+      assert.throws(function () {
+        server.emitHealth()
+      }, ParameterCountError)
+    })
+    it('throws a TypeError if health is not a number', function () {
+      assert.throws(function () {
+        server.emitHealth('3')
+      }, TypeError)
+    })
+    it('throws a TypeError if maxHealth is provided, but is not an number', function () {
+      assert.throws(function () {
+        server.emitHealth(3, '12')
+      }, TypeError)
+    })
+    it('doesn\'t throw an error if maxHealth isn\'t provided', function () {
+      assert.doesNotThrow(function () {
+        server.emitHealth(3)
+      })
+    })
+    it('doesn\'t throw an error if maxHealth is provided', function () {
+      assert.doesNotThrow(function () {
+        server.emitHealth(3, 12)
+      })
+    })
+  })
   context('isHero()', function () {
     beforeEach(function () {
       server = new SocketIOAdapter(io, game, true)
