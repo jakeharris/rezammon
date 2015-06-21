@@ -118,13 +118,18 @@
     this.render()
   }
   Client.prototype.heroMoved = function (data) {
+    if(!data || !data.x || !data.y) throw new SyntaxError()
+    
+    var moved = false
     for(var r in this.renderables)
       if(this.renderables[r] instanceof FilledCircle)
         if(this.renderables[r].radius === 10) {
           this.renderables[r].x = data.x
           this.renderables[r].y = data.y
+          moved = true
         }
     this.render()
+    return moved
   }
   Client.prototype.render = function (data) {
     this.c.clearRect(0, 0, this.canvas.width, this.canvas.height)
