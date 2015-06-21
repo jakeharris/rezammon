@@ -162,7 +162,7 @@ describe('RezammonGame', function () {
       
       assert.notEqual(yf, null)
       assert.notEqual(y, yf)
-      assert.equal(y, yf - 1)
+      assert.equal(y, yf + 1)
       
       y = game.hero.y
       yf = null
@@ -172,7 +172,7 @@ describe('RezammonGame', function () {
       
       assert.notEqual(yf, null)
       assert.notEqual(y, yf)
-      assert.equal(y, yf + 1)
+      assert.equal(y, yf - 1)
     })
     it('throws a TypeError if an actor parameter is also supplied, but it is not a string', function () {
       assert.throws(function () {
