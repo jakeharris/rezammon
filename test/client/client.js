@@ -125,10 +125,36 @@ describe('Client', function () {
         client.heroMoved()
       }, SyntaxError)
     })
-    it('updates the health', function () {
+    it('updates the Hero\'s position', function () {
       sinon.stub(console, 'log')
       client.playerConnect({ id: 'milieu', hero: { x: 1, y: 1 } })
       assert(client.heroMoved({ x: 3, y: 4 }))
+      console.log.restore()
+    })
+  })
+  context('on hero-health-changed', function () {
+    it('throws a SyntaxError if no previous health value is supplied', function () {
+      assert.throws(function () {
+        client.heroHealthChanged()
+      }, SyntaxError)
+    })
+    it('throws a SyntaxError if no new health value is supplied', function () {
+      assert.throws(function () {
+        client.heroHealthChanged({old: 30})
+      }, SyntaxError)
+    })
+    it('throws a TypeError if either health value supplied is not a number', function () {
+      assert.throws(function () {
+        client.heroHealthChanged({ old: '30', new: 4 })
+      }, TypeError)
+      assert.throws(function () {
+        client.heroHealthChanged({ old: 30, new: '4' })
+      }, TypeError)
+    })
+    it('updates the Hero\'s health', function () {
+      sinon.stub(console, 'log')
+      client.playerConnect({ id: 'milieu', hero: { x: 1, y: 1 } })
+      assert(client.heroHealthChanged({ old: 10, new: 9 }))
       console.log.restore()
     })
   })
