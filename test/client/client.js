@@ -119,7 +119,7 @@ describe('Client', function () {
       window.addEventListener.restore()
     })
   })
-  context('on hero-health-changed', function () {
+  context('on hero-moved', function () {
     it('throws a SyntaxError if no x or no y value is supplied', function () {
       assert.throws(function () {
         client.heroMoved()
