@@ -8,7 +8,8 @@ var Player = require('./player'),
     MissingHeroError = require('../errors').MissingHeroError,
     SocketIOAdapter = require('./socket-io-adapter'),
     SocketIOServer = require('socket.io'),
-    Controller = require('./controller')
+    Controller = require('./controller'),
+    ServerAdapter = require('./server-adapter')
 
 
 function RezammonGame (server) {
@@ -27,12 +28,12 @@ RezammonGame.prototype = Object.create(Controller.prototype)
 RezammonGame.prototype.constructor = RezammonGame
 RezammonGame.prototype.createServerAdapter = function (server) {
   if(!server)
-    throw new ParameterCountError('Rezammon configuration requires a WebSockets implementation.')
+    throw new ParameterCountError('Game configuration requires a WebSockets implementation.')
   if(!(server instanceof SocketIOServer))
     throw new TypeError('Interface parameter not of supported type.\n'
-                        + 'Supported types include: \n' 
-                        + '\t\u2022 ' + SocketIOServer + '\n'
-                        + ', received ' + server)
+                        + '\tSupported types include: \n' 
+                        + '\t\t\u2022 SocketIOServer\n'
+                        + '\n\tReceived ' + server.prototype)
     
   switch(server.constructor.name) {
     case 'Server': // socket.io
