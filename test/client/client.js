@@ -80,7 +80,7 @@ describe('Client', function () {
     })
     it('pushes a Text object to renderables if the player isn\'t the Hero', function () {
       sinon.stub(console, 'log')
-      assert(client.renderables.length == 0)
+      assert(client.renderables.length === 0)
       client.playerConnect({ id: '3' })
       console.log(client.renderables)
       assert(client.renderables.length > 0)
@@ -154,6 +154,9 @@ describe('Client', function () {
     it('updates the Hero\'s health', function () {
       sinon.stub(console, 'log')
       client.playerConnect({ id: 'milieu', hero: { x: 1, y: 1 } })
+      assert.doesNotThrow(function () {
+        client.heroHealthChanged({ old: 10, new: 9 })
+      })
       assert(client.heroHealthChanged({ old: 10, new: 9 }))
       console.log.restore()
     })
