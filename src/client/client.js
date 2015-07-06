@@ -1,7 +1,7 @@
 // We're expecting socket.io and jQuery to
 // already be loaded.
 (function(exports) {
-  'using strict';
+  'use strict';
   
   exports.Client = Client
   
@@ -23,6 +23,7 @@
     this.socket.on('hero-connected', this.heroConnected.bind(this))
     this.socket.on('hero-disconnected', this.heroDisconnected.bind(this))
     this.socket.on('hero-moved', this.heroMoved.bind(this))
+    this.socket.on('hero-health-changed', this.heroHealthChanged.bind(this))
     
     window.addEventListener('unload', function () {
       this.socket.disconnect()
@@ -53,6 +54,11 @@
           y: data.hero.y,
           radius: 10,
           fillStyle: '#faaa42'
+        })
+      )
+      this.renderables.push(
+        new StatusBar({
+          type: 'hero-health'
         })
       )
     }
@@ -131,11 +137,28 @@
     this.render()
     return moved
   }
+  Client.prototype.heroHealthChanged = function (data) {
+    if(!data || !data.old || !data.new)
+      throw new SyntaxError('heroHealthChanged() requires an object with properties \'old\' and \'new\' as a parameter.')
+    if(typeof data.old !== 'number' || typeof data.new !== 'number')
+      throw new TypeError('Old and new health values must both be numbers.')
+      
+    var changed = false
+    for(var r in this.renderables)
+      if(this.renderables[r] instanceof StatusBar)
+        if(this.renderables[r].type === 'hero-health') {
+          this.renderables[r].currentHealth = data.new
+          this.renderables[r].previousHealth = data.old
+          changed = true
+        }
+    return changed
+  }
   Client.prototype.render = function (data) {
     this.c.clearRect(0, 0, this.canvas.width, this.canvas.height)
     for(var r in this.renderables)
       if(this.renderables[r] instanceof Renderable)
         this.renderables[r].render(this.c)
   }
+
   
 })(this)

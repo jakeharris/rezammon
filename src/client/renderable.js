@@ -5,6 +5,7 @@
   exports.Text = Text
   exports.FilledRect = FilledRect
   exports.FilledCircle = FilledCircle
+  exports.StatusBar = StatusBar
   
   function Renderable (opts) {
     this.x = (opts.x) ? opts.x : 0
@@ -58,4 +59,32 @@
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI*4)
     ctx.fill()
   }
+  
+  function StatusBar (opts) {
+    if(!opts || !opts.type) throw new SyntaxError('Status bars require a type.')
+    if(!(
+       opts.type === 'hero-health'
+    || opts.type === 'hero-mana'
+      )) throw new SyntaxError('Invalid type given (' + opts.type + ').')
+    
+    var healthRed = '#cf3434',
+        healthDark = '#5f1212'
+    
+    Renderable.call(this, opts)
+    this.type = opts.type
+    
+    switch(this.type) {
+      case 'hero-health':
+        this.max = 100
+        this.current = 100
+        this.previous = null
+      case 'health':
+        this.max = 10
+        this.current = 10
+        this.previous = null
+    }
+  }
+  StatusBar.prototype = Object.create(Renderable.prototype)
+  StatusBar.prototype.constructor = StatusBar
+  
 })(this)
