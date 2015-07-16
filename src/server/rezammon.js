@@ -21,8 +21,8 @@ function RezammonGame (server) {
   setInterval(function () {
     if(this.hero && this.hero.health) {
       this.server.emitHealth(this.hero.health - 1, this.hero.health)
-      this.hero.health--
-      if(this.hero.health <= 0) {
+      this.hero.takeDamage(1)
+      if(this.hero.dead) {
         this.hero = null
         this.server.heroID = null
       }
