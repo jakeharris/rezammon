@@ -138,7 +138,6 @@
     return moved
   }
   Client.prototype.heroHealthChanged = function (data) {
-    console.log('hero health changed')
     if(typeof data === 'undefined' || typeof data.old === 'undefined' || typeof data.new === 'undefined')
       throw new SyntaxError('heroHealthChanged() requires an object with properties \'old\' and \'new\' as a parameter.')
     if(typeof data.old !== 'number' || typeof data.new !== 'number')
@@ -148,7 +147,6 @@
     for(var r in this.renderables)
       if(this.renderables[r] instanceof StatusBar)
         if(this.renderables[r].type === 'hero-health') {
-          console.log('setting healthbar health to ' + data.old)
           this.renderables[r].current = data.new
           this.renderables[r].previous = data.old
           changed = true

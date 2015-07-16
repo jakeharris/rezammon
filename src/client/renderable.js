@@ -81,7 +81,6 @@
     ctx.fillStyle = this.healthDark
     ctx.fillRect(50, 15, this.max, 15)
     ctx.fillStyle = this.healthRed
-    console.log((this.current / this.max) * 100)
     ctx.fillRect(50, 15, (this.current / this.max) * 100, 15)
   }
   

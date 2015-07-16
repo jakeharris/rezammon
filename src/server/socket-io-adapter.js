@@ -76,7 +76,6 @@ SocketIOAdapter.prototype.emitHealth = function (health, prevHealth) {
     old: prevHealth,
     new: (health >= 0) ? health : 0
   }
-  console.log('hero health changing to ' + opts.new)
   this.server.emit('hero-health-changed', opts)
 }
 
