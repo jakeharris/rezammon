@@ -67,24 +67,22 @@
     || opts.type === 'hero-mana'
       )) throw new SyntaxError('Invalid type given (' + opts.type + ').')
     
-    var healthRed = '#cf3434',
-        healthDark = '#5f1212'
-    
     Renderable.call(this, opts)
-    this.type = opts.type
     
-    switch(this.type) {
-      case 'hero-health':
-        this.max = 100
-        this.current = 100
-        this.previous = null
-      case 'health':
-        this.max = 10
-        this.current = 10
-        this.previous = null
-    }
+    this.healthRed = '#cf3434'
+    this.healthDark = '#5f1212'
+    this.type = opts.type
+    this.max = 100
+    this.current = 100
   }
   StatusBar.prototype = Object.create(Renderable.prototype)
   StatusBar.prototype.constructor = StatusBar
+  StatusBar.prototype.draw = function (ctx) {
+    ctx.fillStyle = this.healthDark
+    ctx.fillRect(50, 15, this.max, 15)
+    ctx.fillStyle = this.healthRed
+    console.log((this.current / this.max) * 100)
+    ctx.fillRect(50, 15, (this.current / this.max) * 100, 15)
+  }
   
 })(this)

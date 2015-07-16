@@ -66,17 +66,17 @@ SocketIOAdapter.prototype.removePlayer = function (id) {
   delete this.game.players[id]
   return Object.keys(this.game.players).length
 }
-SocketIOAdapter.prototype.emitHealth = function (health, maxHealth) {
+SocketIOAdapter.prototype.emitHealth = function (health, prevHealth) {
   if(health === null || health === undefined) throw new ParameterCountError('emitHealth() requires a health parameter. Received: ' + health)
   if(!(typeof health === 'number')) throw new TypeError()
-  if(maxHealth && typeof maxHealth !== 'number') throw new TypeError()
-  if(!maxHealth) maxHealth = 10
+  if(prevHealth && typeof prevHealth !== 'number') throw new TypeError()
+  if(!prevHealth) prevHealth = 100
   
   var opts = {
-    maxHealth: maxHealth,
-    health: (health >= 0) ? health : 0
+    old: prevHealth,
+    new: (health >= 0) ? health : 0
   }
-  
+  console.log('hero health changing to ' + opts.new)
   this.server.emit('hero-health-changed', opts)
 }
 

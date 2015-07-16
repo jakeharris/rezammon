@@ -19,9 +19,17 @@ function RezammonGame (server) {
   this.hero = null
   
   setInterval(function () {
-    if(this.hero && this.hero.health)
-      this.server.emitHealth(--this.hero.health)
+    if(this.hero && this.hero.health) {
+      this.server.emitHealth(this.hero.health - 1, this.hero.health)
+      this.hero.health--
+      if(this.hero.health <= 0) {
+        this.hero = null
+        this.server.heroID = null
+      }
+    }
   }.bind(this), 3000)
+  
+  
 }
 
 RezammonGame.prototype = Object.create(Controller.prototype)
