@@ -98,7 +98,8 @@ SocketIOAdapter.prototype.configureServer = function () {
     if(this.hasConnectedHero()) {
       opts.hero = {
         x: this.game.hero.x,
-        y: this.game.hero.y
+        y: this.game.hero.y,
+        current: this.game.hero.health
       }
     }
     socket.emit('player-connect', opts)

@@ -58,7 +58,8 @@
       )
       this.renderables.push(
         new StatusBar({
-          type: 'hero-health'
+          type: 'hero-health',
+          current: data.hero.health
         })
       )
     }
@@ -130,8 +131,8 @@
     for(var r in this.renderables)
       if(this.renderables[r] instanceof FilledCircle)
         if(this.renderables[r].radius === 10) {
-          this.renderables[r].x = data.x
-          this.renderables[r].y = data.y
+          this.renderables[r].x = data.x + (this.canvas.width / 2)
+          this.renderables[r].y = data.y + (this.canvas.height / 2)
           moved = true
         }
     this.render()

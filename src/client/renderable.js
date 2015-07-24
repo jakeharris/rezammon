@@ -73,7 +73,7 @@
     this.healthDark = '#5f1212'
     this.type = opts.type
     this.max = 100
-    this.current = 100
+    this.current = (opts.current) ? opts.current : this.max
   }
   StatusBar.prototype = Object.create(Renderable.prototype)
   StatusBar.prototype.constructor = StatusBar
