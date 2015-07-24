@@ -14,6 +14,8 @@
     this.canvas = document.getElementById('c')
     this.c = this.canvas.getContext('2d')
     
+    this.pressed = [] // for removing input
+    
     this.id = null
     this.isHero = false
     this.renderables = new Array(0)
@@ -35,6 +37,7 @@
     if(!data) throw new SyntaxError('No data object was given. All event handlers require a data object from the server.')
     if(typeof data !== 'object') throw new TypeError('data parameter wasn\'t an object. ' + data)
     if(data.id === undefined) throw new SyntaxError('Received a data object with no id, so we can\'t do our work.')
+    if(data.hero === undefined) throw new SyntaxError('Received a data object with no hero, so we can\'t do our work.')
     
     this.id = data.id
     if(!this.isHero) {
@@ -48,17 +51,21 @@
       )
     }
     if(data.hero) {
+      console.log(this.c)
       this.renderables.push(
         new FilledCircle({
-          x: data.hero.x,
-          y: data.hero.y,
-          radius: 10,
+          x: this.canvas.width / 2,
+          y: this.canvas.height / 2,
+          radius: this.canvas.height / 20,
           fillStyle: '#faaa42'
         })
       )
       this.renderables.push(
         new StatusBar({
-          type: 'hero-health'
+          x: this.canvas.width / 2 - (100 / 2),
+          y:  15,
+          type: 'hero-health',
+          current: (data.hero.health !== undefined) ? data.hero.health : 10
         })
       )
     }
@@ -98,7 +105,33 @@
         default:
           return false
       }
-      this.socket.emit('hero-move', { direction: direction })
+      if(this.pressed[direction] === undefined || this.pressed[direction] === null)
+        this.socket.emit('hero-move', { direction: direction })
+        console.log(direction)
+        this.pressed[direction] = setInterval(function () {
+          this.socket.emit('hero-move', { direction: direction })
+        }.bind(this))
+    }.bind(this))
+    window.addEventListener('keyup', function (e) {
+      var direction
+      switch(e.keyCode) {
+        case 37:
+          direction = 'left'
+          break
+        case 38:
+          direction = 'up'
+          break
+        case 39:
+          direction = 'right'
+          break
+        case 40:
+          direction = 'down'
+          break
+        default:
+          return false
+      }
+      clearInterval(this.pressed[direction])
+      this.pressed[direction] = null
     }.bind(this))
   }
   Client.prototype.heroConnected = function (data) {
@@ -124,12 +157,15 @@
     this.render()
   }
   Client.prototype.heroMoved = function (data) {
-    if(!data || !data.x || !data.y) throw new SyntaxError()
+    if ( typeof data   === 'undefined' 
+      || typeof data.x === 'undefined'
+      || typeof data.y === 'undefined') 
+      throw new SyntaxError('Requires destination coordinates.');
     
     var moved = false
     for(var r in this.renderables)
       if(this.renderables[r] instanceof FilledCircle)
-        if(this.renderables[r].radius === 10) {
+        if(this.renderables[r].hasOwnProperty('radius')) {
           this.renderables[r].x = data.x
           this.renderables[r].y = data.y
           moved = true
