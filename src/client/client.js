@@ -105,12 +105,12 @@
         default:
           return false
       }
-      if(this.pressed[direction] === undefined || this.pressed[direction] === null)
+      if(this.pressed[direction] === undefined || this.pressed[direction] === null) {
         this.socket.emit('hero-move', { direction: direction })
-        console.log(direction)
         this.pressed[direction] = setInterval(function () {
           this.socket.emit('hero-move', { direction: direction })
         }.bind(this))
+      }
     }.bind(this))
     window.addEventListener('keyup', function (e) {
       var direction
