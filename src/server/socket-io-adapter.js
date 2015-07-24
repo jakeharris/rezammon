@@ -18,8 +18,7 @@ function SocketIOAdapter (io, game, testing) {
     throw new TypeError()
     
   ServerAdapter.call(this, io, game)
-  
-  this.heroID = null
+
   this.game = this.controller // rational alias
   this.isTesting = (testing) ? testing : false
   
@@ -30,13 +29,12 @@ SocketIOAdapter.prototype = Object.create(ServerAdapter.prototype)
 SocketIOAdapter.prototype.constructor = SocketIOAdapter
 
 SocketIOAdapter.prototype.hasConnectedHero = function () {
-  return this.heroID !== null && this.heroID !== undefined
+  return this.getHeroID() !== null && this.getHeroID() !== undefined
 }
 SocketIOAdapter.prototype.setHero = function (id) {
   if(this.hasConnectedHero()) throw new ConfiguredHeroError()
-  this.heroID = id
   try {
-    this.getSocket(this.heroID).emit('hero-connect')
+    this.getSocket(id).emit('hero-connect')
     this.server.emit('hero-connected')
   }
   catch (e) {
@@ -48,7 +46,7 @@ SocketIOAdapter.prototype.isHero = function (id) {
   if(!id) throw new ParameterCountError()
   if(!(typeof id === 'string')) throw new TypeError()
   
-  return this.heroID === id
+  return this.getHeroID() === id
 }
 SocketIOAdapter.prototype.addPlayer = function (id) {
   if(!id) throw new ParameterCountError()
@@ -129,7 +127,6 @@ SocketIOAdapter.prototype.configureServer = function () {
       } // should perhaps ensure that the player is no longer listed?
       
       if(this.isHero(socket.id)) {
-        this.heroID = null
         this.game.hero.id =  null
         this.server.emit('hero-disconnected')
       }
@@ -171,14 +168,12 @@ SocketIOAdapter.prototype.getSocket = function (id) {
 }
 SocketIOAdapter.prototype.getHeroID = function () {
   var id
-  if(!this.hasConnectedHero())
-    try {
-      id = this.game.getHeroID()
-      return id
-    }
-    catch (e) {
-      console.error(e.message)
-      return null
-    }
-  else return this.heroID
+  try {
+    id = this.game.getHeroID()
+    return id
+  }
+  catch (e) {
+    console.error(e.message)
+    return null
+  }
 }

@@ -45,7 +45,7 @@ describe('SocketIOAdapter', function () {
       assert.equal(false, server.hasConnectedHero())
     })
     it('can tell if we do have a Hero socket configured', function () {
-      server.heroID = '0'
+      server.game.hero = { id: '0' }
       assert(server.hasConnectedHero())
     })
   })
