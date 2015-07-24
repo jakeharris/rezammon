@@ -27,10 +27,15 @@
       throw new Error('ParameterCountError(): no Canvas context supplied')
     if(!(ctx instanceof CanvasRenderingContext2D))
       throw new TypeError()
+      
+    ctx.save()
+    
     if(this.fillStyle) ctx.fillStyle = this.fillStyle
     ctx.beginPath()
     this.draw(ctx)
     ctx.closePath()
+    
+    ctx.restore()
   }
 
   function Text(opts) {
@@ -56,6 +61,7 @@
   FilledCircle.prototype = Object.create(Renderable.prototype)
   FilledCircle.prototype.constructor = FilledCircle
   FilledCircle.prototype.draw = function (ctx) {
+    ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2)
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI*4)
     ctx.fill()
   }
@@ -79,9 +85,9 @@
   StatusBar.prototype.constructor = StatusBar
   StatusBar.prototype.draw = function (ctx) {
     ctx.fillStyle = this.healthDark
-    ctx.fillRect(50, 15, this.max, 15)
+    ctx.fillRect(this.x, this.y, 100, 15)
     ctx.fillStyle = this.healthRed
-    ctx.fillRect(50, 15, (this.current / this.max) * 100, 15)
+    ctx.fillRect(this.x, this.y, (this.current / this.max) * 100, 15)
   }
   
 })(this)

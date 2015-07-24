@@ -71,17 +71,24 @@ describe('Client', function () {
       }, SyntaxError)
       console.log.restore()
     })
+    it('throws a SyntaxError if an object is passed, but its hero object isn\'t set', function () {
+      sinon.stub(console, 'log')
+      assert.throws(function () {
+        client.playerConnect({ id: '32' })
+      }, SyntaxError)
+      console.log.restore()
+    })
     it('prints the id if it gets one', function () {
       sinon.stub(console, 'log')
       var c = console.log.callCount
-      client.playerConnect({ id: '3' })
+      client.playerConnect({ id: '3', hero: { x: 0, y: 0, current: 100 } })
       assert(console.log.calledWith('connected as 3'))
       console.log.restore()
     })
     it('pushes a Text object to renderables if the player isn\'t the Hero', function () {
       sinon.stub(console, 'log')
       assert(client.renderables.length === 0)
-      client.playerConnect({ id: '3' })
+      client.playerConnect({ id: '3', hero: { x: 0, y: 0, current: 100 } })
       console.log(client.renderables)
       assert(client.renderables.length > 0)
       console.log.restore()
@@ -89,7 +96,7 @@ describe('Client', function () {
     it('renders everything', function () {
       sinon.stub(console, 'log')
       sinon.spy(client, 'render')
-      client.playerConnect({ id: '3' })
+      client.playerConnect({ id: '3', hero: { x: 0, y: 0, current: 100 } })
       assert(client.render.calledOnce)
       console.log.restore()
     })
@@ -111,11 +118,11 @@ describe('Client', function () {
       client.heroConnect()
       assert(client.isHero)
     })
-    it('hooks up the key listener', function () {
+    it('hooks up the key listeners', function () {
       sinon.spy(window, 'addEventListener')
       var c = window.addEventListener.callCount
       client.heroConnect()
-      assert(window.addEventListener.callCount === c + 1)
+      assert(window.addEventListener.callCount === c + 2)
       window.addEventListener.restore()
     })
   })
