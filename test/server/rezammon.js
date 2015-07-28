@@ -63,8 +63,7 @@ describe('RezammonGame', function () {
     })
     it('coerces there to be a Hero if there are players, but no Hero; then, it returns that Hero\'s ID', function () {
       server.addPlayer('0')
-      server.addPlayer('1')
-      assert(game.getHeroID() === '0')
+      assert.equal(game.getHeroID(), '0')
     })
   })
   context('chooseHero()', function () {

@@ -45,7 +45,7 @@ describe('SocketIOAdapter', function () {
       assert.equal(false, server.hasConnectedHero())
     })
     it('can tell if we do have a Hero socket configured', function () {
-      server.game.hero = { id: '0' }
+      server.addPlayer('0')
       assert(server.hasConnectedHero())
     })
   })
@@ -54,7 +54,7 @@ describe('SocketIOAdapter', function () {
       server = new SocketIOAdapter(io, game, true)
     })
     it('throws a ConfiguredHeroError if there\'s already a Hero (even if the Hero\'s ID is the submitted ID)', function () {
-      server.heroID = '0'
+      server.addPlayer('0')
       assert.throws(function () {
         server.setHero('0')
       }, ConfiguredHeroError)
@@ -158,7 +158,7 @@ describe('SocketIOAdapter', function () {
   context('isHero()', function () {
     beforeEach(function () {
       server = new SocketIOAdapter(io, game, true)
-      server.heroID = '0'
+      server.addPlayer('0')
     })
     it('throws a ParameterCountError if no id was supplied', function () {
       assert.throws(function () {

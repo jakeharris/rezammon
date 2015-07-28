@@ -49,7 +49,7 @@ SocketIOAdapter.prototype.isHero = function (id) {
   return this.getHeroID() === id
 }
 SocketIOAdapter.prototype.addPlayer = function (id) {
-  if(!id) throw new ParameterCountError()
+  if(typeof id === 'undefined') throw new ParameterCountError()
   if(!(typeof id === 'string')) throw new TypeError()
   
   this.game.players[id] = (new Player(id))
@@ -173,7 +173,7 @@ SocketIOAdapter.prototype.getHeroID = function () {
     return id
   }
   catch (e) {
-    console.error(e.message)
+    if(!this.isTesting) console.error(e.message)
     return null
   }
 }
