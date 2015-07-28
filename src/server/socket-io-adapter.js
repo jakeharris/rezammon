@@ -21,6 +21,7 @@ function SocketIOAdapter (io, game, testing) {
 
   this.game = this.controller // rational alias
   this.isTesting = (testing) ? testing : false
+  this.heroID = null // not authoritative. only for checking to see if we need 
   
   this.configureServer()
 }
@@ -32,10 +33,11 @@ SocketIOAdapter.prototype.hasConnectedHero = function () {
   return this.getHeroID() !== null && this.getHeroID() !== undefined
 }
 SocketIOAdapter.prototype.setHero = function (id) {
-  if(this.hasConnectedHero()) throw new ConfiguredHeroError()
   try {
+    console.log('400: ' + this.getSocket(id))
     this.getSocket(id).emit('hero-connect')
     this.server.emit('hero-connected')
+    console.log('500')
   }
   catch (e) {
     if(!this.isTesting) console.error(e.message)
@@ -87,8 +89,13 @@ SocketIOAdapter.prototype.configureServer = function () {
     
     /// ask interface to determine if we need
     /// a hero, and assign one if necessary
+    
+    console.log('100: ' + socket.id)
+    
     if(!this.hasConnectedHero())
       this.setHero(this.getHeroID())
+      
+    console.log('600')
       
     var opts = {
       id: socket.id 
@@ -169,7 +176,9 @@ SocketIOAdapter.prototype.getSocket = function (id) {
 SocketIOAdapter.prototype.getHeroID = function () {
   var id
   try {
+    console.log('200')
     id = this.game.getHeroID()
+    console.log('300: ' + id)
     return id
   }
   catch (e) {

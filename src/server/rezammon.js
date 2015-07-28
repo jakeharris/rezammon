@@ -66,9 +66,15 @@ RezammonGame.prototype.chooseHero = function () {
   if(Object.keys(this.players).length < 1)
     throw new Error('No players are connected; choosing a hero is impossible.')
   
+  console.log('210')
+    
   var newHeroID = Math.floor(Math.random() * Object.keys(this.players).length)
+  
+  console.log('220, supposed hero index: ' + newHeroID)
     
   this.hero = new Hero(Object.keys(this.players)[newHeroID])
+  
+  console.log('230, hero ID: ' + this.hero.id)
     
   return this.hero.id
 }
