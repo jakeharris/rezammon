@@ -23,6 +23,7 @@
     this.socket.on('player-connect', this.playerConnect.bind(this))
     this.socket.on('hero-connect', this.heroConnect.bind(this))
     this.socket.on('hero-connected', this.heroConnected.bind(this))
+    this.socket.on('hero-disconnect', this.heroDisconnect.bind(this))
     this.socket.on('hero-disconnected', this.heroDisconnected.bind(this))
     this.socket.on('hero-moved', this.heroMoved.bind(this))
     this.socket.on('hero-health-changed', this.heroHealthChanged.bind(this))
@@ -87,58 +88,19 @@
           this.renderables.splice(r, 1)
     }
     this.render()
-    window.addEventListener('keydown', function (e) {
-      var direction
-      switch(e.keyCode) {
-        case 37:
-          direction = 'left'
-          break
-        case 38:
-          direction = 'up'
-          break
-        case 39:
-          direction = 'right'
-          break
-        case 40:
-          direction = 'down'
-          break
-        default:
-          return false
-      }
-      if(this.pressed[direction] === undefined || this.pressed[direction] === null) {
-        this.socket.emit('hero-move', { direction: direction })
-        this.pressed[direction] = setInterval(function () {
-          this.socket.emit('hero-move', { direction: direction })
-        }.bind(this))
-      }
-    }.bind(this))
-    window.addEventListener('keyup', function (e) {
-      var direction
-      switch(e.keyCode) {
-        case 37:
-          direction = 'left'
-          break
-        case 38:
-          direction = 'up'
-          break
-        case 39:
-          direction = 'right'
-          break
-        case 40:
-          direction = 'down'
-          break
-        default:
-          return false
-      }
-      clearInterval(this.pressed[direction])
-      this.pressed[direction] = null
-    }.bind(this))
+    window.addEventListener('keydown', this.heroKeydownHandler.bind(this))
+    window.addEventListener('keyup', this.heroKeyupHandler.bind(this))
   }
   Client.prototype.heroConnected = function (data) {
     for(var r in this.renderables)
       if(this.renderables[r] instanceof Text)
         if(this.renderables[r].text === 'the hero just left.')
           this.renderables.splice(r, 1)
+    this.render()
+  }
+  Client.prototype.heroDisconnect = function () {
+    window.removeEventListener('keydown', this.heroKeydownHandler.bind(this))
+    window.removeEventListener('keyup', this.heroKeyupHandler.bind(this))
     this.render()
   }
   Client.prototype.heroDisconnected = function (data) {
@@ -197,5 +159,51 @@
         this.renderables[r].render(this.c)
   }
 
+  Client.prototype.heroKeydownHandler = function (e) {
+    var direction
+    switch(e.keyCode) {
+      case 37:
+        direction = 'left'
+        break
+      case 38:
+        direction = 'up'
+        break
+      case 39:
+        direction = 'right'
+        break
+      case 40:
+        direction = 'down'
+        break
+      default:
+        return false
+    }
+    if(this.pressed[direction] === undefined || this.pressed[direction] === null) {
+      this.socket.emit('hero-move', { direction: direction })
+      this.pressed[direction] = setInterval(function () {
+        this.socket.emit('hero-move', { direction: direction })
+      }.bind(this))
+    }
+  }
+  Client.prototype.heroKeyupHandler = function (e) {
+    var direction
+    switch(e.keyCode) {
+      case 37:
+        direction = 'left'
+        break
+      case 38:
+        direction = 'up'
+        break
+      case 39:
+        direction = 'right'
+        break
+      case 40:
+        direction = 'down'
+        break
+      default:
+        return false
+    }
+    clearInterval(this.pressed[direction])
+    this.pressed[direction] = null
+  }
   
 })(this)

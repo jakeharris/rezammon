@@ -24,7 +24,7 @@ function RezammonGame (server) {
       this.hero.takeDamage(10)
       if(this.hero.dead) {
         this.hero = null
-        this.server.heroID = null
+        this.server.hasHero = false
       }
     }
   }.bind(this), 3000)
@@ -65,17 +65,11 @@ RezammonGame.prototype.getHeroID = function () {
 RezammonGame.prototype.chooseHero = function () {
   if(Object.keys(this.players).length < 1)
     throw new Error('No players are connected; choosing a hero is impossible.')
-  
-  console.log('210')
     
   var newHeroID = Math.floor(Math.random() * Object.keys(this.players).length)
   
-  console.log('220, supposed hero index: ' + newHeroID)
-    
   this.hero = new Hero(Object.keys(this.players)[newHeroID])
-  
-  console.log('230, hero ID: ' + this.hero.id)
-    
+
   return this.hero.id
 }
 RezammonGame.prototype.move = function (direction, actorID) {

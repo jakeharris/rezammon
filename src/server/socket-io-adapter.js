@@ -21,7 +21,7 @@ function SocketIOAdapter (io, game, testing) {
 
   this.game = this.controller // rational alias
   this.isTesting = (testing) ? testing : false
-  this.heroID = null // not authoritative. only for checking to see if we need 
+  this.hasHero = false
   
   this.configureServer()
 }
@@ -30,18 +30,21 @@ SocketIOAdapter.prototype = Object.create(ServerAdapter.prototype)
 SocketIOAdapter.prototype.constructor = SocketIOAdapter
 
 SocketIOAdapter.prototype.hasConnectedHero = function () {
-  return this.getHeroID() !== null && this.getHeroID() !== undefined
+  return this.hasHero
 }
-SocketIOAdapter.prototype.setHero = function (id) {
+SocketIOAdapter.prototype.setHero = function () {
+  if(this.hasHero) throw new ConfiguredHeroError()
   try {
-    console.log('400: ' + this.getSocket(id))
-    this.getSocket(id).emit('hero-connect')
-    this.server.emit('hero-connected')
-    console.log('500')
+    var id = this.getHeroID()
+    this.hasHero = true
+    if(!this.isTesting) {
+      this.getSocket(id).emit('hero-connect')
+      this.server.emit('hero-connected')
+    }
   }
   catch (e) {
     if(!this.isTesting) console.error(e.message)
-    this.heroID = null
+    this.hasHero = false
   }
 }
 SocketIOAdapter.prototype.isHero = function (id) {
@@ -89,13 +92,9 @@ SocketIOAdapter.prototype.configureServer = function () {
     
     /// ask interface to determine if we need
     /// a hero, and assign one if necessary
-    
-    console.log('100: ' + socket.id)
-    
     if(!this.hasConnectedHero())
-      this.setHero(this.getHeroID())
+      this.setHero()
       
-    console.log('600')
       
     var opts = {
       id: socket.id 
@@ -135,6 +134,7 @@ SocketIOAdapter.prototype.configureServer = function () {
       
       if(this.isHero(socket.id)) {
         this.game.hero.id =  null
+        socket.emit('hero-disconnect')
         this.server.emit('hero-disconnected')
       }
       
@@ -142,7 +142,7 @@ SocketIOAdapter.prototype.configureServer = function () {
       console.log()
       
       if(!this.hasConnectedHero()) 
-        this.setHero(this.getHeroID())
+        this.setHero()
           
       this.server.emit('player-disconnected')
     }.bind(this, socket))
@@ -176,9 +176,7 @@ SocketIOAdapter.prototype.getSocket = function (id) {
 SocketIOAdapter.prototype.getHeroID = function () {
   var id
   try {
-    console.log('200')
     id = this.game.getHeroID()
-    console.log('300: ' + id)
     return id
   }
   catch (e) {

@@ -46,6 +46,7 @@ describe('SocketIOAdapter', function () {
     })
     it('can tell if we do have a Hero socket configured', function () {
       server.addPlayer('0')
+      server.setHero()
       assert(server.hasConnectedHero())
     })
   })
@@ -55,8 +56,9 @@ describe('SocketIOAdapter', function () {
     })
     it('throws a ConfiguredHeroError if there\'s already a Hero (even if the Hero\'s ID is the submitted ID)', function () {
       server.addPlayer('0')
+      server.setHero()
       assert.throws(function () {
-        server.setHero('0')
+        server.setHero()
       }, ConfiguredHeroError)
       assert(server.hasConnectedHero())
       assert(server.isHero('0'))
