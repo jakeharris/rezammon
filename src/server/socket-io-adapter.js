@@ -103,11 +103,14 @@ SocketIOAdapter.prototype.configureServer = function () {
       opts.hero = {
         x: this.game.hero.x,
         y: this.game.hero.y,
-        current: this.game.hero.health
+        health: this.game.hero.health
       }
     }
     socket.emit('player-connect', opts)
     this.server.emit('player-connected')
+    
+    if(!this.isHero(socket.id)) socket.emit('observer-connect');
+    // maybe an "observer-connected" event
     
     // print server console data
     console.log('%%%%% USER CONNECTED %%%%%')

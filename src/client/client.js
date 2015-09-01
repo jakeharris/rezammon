@@ -28,6 +28,8 @@
     this.socket.on('hero-moved', this.heroMoved.bind(this))
     this.socket.on('hero-health-changed', this.heroHealthChanged.bind(this))
     
+    this.socket.on('observer-connect', this.observerConnect.bind(this))
+    
     window.addEventListener('unload', function () {
       this.socket.disconnect()
     })
@@ -204,6 +206,10 @@
     }
     clearInterval(this.pressed[direction])
     this.pressed[direction] = null
+  }
+  
+  Client.prototype.observerConnect = function () {
+     
   }
   
 })(this)
