@@ -84,3 +84,22 @@ RezammonGame.prototype.move = function (direction, actorID) {
   }
   else this.hero.move(direction)
 }
+RezammonGame.prototype.giveHealth = function () {
+  console.log('%%%%% made it in.')
+  var numberOfObservers = Object.keys(this.players).length - 1,
+      currentHealth = this.hero.health,
+      maxHealth = this.hero.maxHealth
+
+  // for now, we'll just say:
+  // give the hero x health, 
+  //   where x is 1/100th of his max health,
+  //   divided by the number of observers.
+  console.log('%%%%% currentHealth before: ' + currentHealth)
+  console.log('%%%%% number of observers: ' + numberOfObservers)
+  this.hero.takeDamage(-(maxHealth / 100 / numberOfObservers))
+  console.log('%%%%% currentHealth after: ' + currentHealth)
+
+  
+  this.server.emitHealth(currentHealth)
+  console.log('%%%%% called server.emitHealth')
+}

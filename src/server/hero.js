@@ -11,6 +11,7 @@ function Hero (id, opts) {
   Actor.call(this, opts)
   this.id = id
   this.health = 100 // override
+  this.maxHealth = 100
 }
 
 Hero.prototype = Object.create(Actor.prototype)
