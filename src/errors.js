@@ -42,6 +42,15 @@ function SocketNotConnectedError(msg) {
   this.message = msg
 }
 
+function InvalidActorError(msg) {
+  // We expected a socket and got none,
+  // or one that didn't have the functions
+  // we needed.
+  Error.captureStackTrace(this, this.constructor)
+  this.name = 'InvalidActorError'
+  this.message = msg
+}
+
 ParameterCountError.prototype = Object.create(Error.prototype)
 ParameterCountError.prototype.constructor = ParameterCountError
 
@@ -57,8 +66,12 @@ NotImplementedError.prototype.constructor = NotImplementedError
 SocketNotConnectedError.prototype = Object.create(Error.prototype)
 SocketNotConnectedError.prototype.constructor = SocketNotConnectedError
 
+InvalidActorError.prototype = Object.create(Error.prototype)
+InvalidActorError.prototype.constructor = InvalidActorError
+
 module.exports.ParameterCountError = ParameterCountError
 module.exports.ConfiguredHeroError = ConfiguredHeroError
 module.exports.MissingHeroError = MissingHeroError
 module.exports.NotImplementedError = NotImplementedError
 module.exports.SocketNotConnectedError = SocketNotConnectedError
+module.exports.InvalidActorError = InvalidActorError
