@@ -15,16 +15,15 @@
           sans-serif;
       }
       canvas#c {
-        width: 100%;
-        height: 100%;
         z-index: 1;
+        border: 3px solid #333;
       }
     </style>
     <script src="bower_components/socket.io-1.3.5/index.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
   </head>
   <body>
-    <canvas id="c"></canvas>
+    <canvas id="c" width=600 height=480></canvas>
   </body>
   <script src="src/client/renderable.js"></script>
   <script src="src/client/client.js"></script>
