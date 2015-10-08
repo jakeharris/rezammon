@@ -6,6 +6,7 @@
   exports.FilledRect = FilledRect
   exports.FilledCircle = FilledCircle
   exports.StatusBar = StatusBar
+  exports.Button = Button
   
   function Renderable (opts) {
     this.x = (opts.x) ? opts.x : 0
@@ -15,13 +16,11 @@
     this.height = (opts.height) ? opts.height : 0
     if(opts.fillStyle) this.fillStyle = opts.fillStyle
   }
-
   Renderable.prototype.draw = function (ctx) {
     // each implementing type should
     // override this
-    ctx.fillRect(this.x, this.y, this.width, this.height)
+    throw new Error('NotImplementedError(): every Renderable subtype must define its own draw(ctx) function')
   }
-
   Renderable.prototype.render = function (ctx) {
     if(!ctx) 
       throw new Error('ParameterCountError(): no Canvas context supplied')
@@ -64,6 +63,86 @@
     ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2)
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI*4)
     ctx.fill()
+  }
+  
+  function Button (opts) {
+    if(!opts || !opts.onClick) throw new SyntaxError('Buttons require an onClick event handler.')
+    
+    Renderable.call(this, opts)
+    
+    this.borderRadius = (opts.borderRadius !== undefined) ? opts.borderRadius : 0
+    this.depth = (opts.depth !== undefined) ? opts.depth : 5
+    this.text = (opts.text !== undefined) ? opts.text : null
+    this.onClick = opts.onClick
+    this.state = 'up' // valid states: up, down
+    
+    window.addEventListener('mousedown', function (e) {
+      e.preventDefault()
+      if(this.containsPoint(e.clientX, e.clientY))
+        this.onMouseDown()
+    }.bind(this))
+    window.addEventListener('mouseup', function (e) {
+      e.preventDefault()
+      if(this.containsPoint(e.clientX, e.clientY) && this.state === 'down')
+        this.onMouseUp()
+    }.bind(this))
+  }
+  Button.prototype = Object.create(Renderable.prototype)
+  Button.prototype.constructor = Button
+  Button.prototype.draw = function (ctx) {
+    
+    /* DRAW THE TOP OF THE BUTTON */
+    var curX = this.x + this.borderRadius,
+        curY = this.y
+    
+    ctx.moveTo(curX, curY)
+    
+    curX += this.width - 2 * this.borderRadius
+    ctx.lineTo(curX, curY)
+    curY += this.borderRadius
+    ctx.arc(curX, curY, this.borderRadius, (-Math.PI / 2), 0)
+    curX += this.borderRadius
+    
+    curY += this.height - 2 * this.borderRadius
+    ctx.lineTo(curX, curY)
+    curX -= this.borderRadius
+    ctx.arc(curX, curY, this.borderRadius, 0, Math.PI / 2)
+    curY += this.borderRadius
+    
+    curX -= this.width - 2 * this.borderRadius
+    ctx.lineTo(curX, curY)
+    curY -= this.borderRadius
+    ctx.arc(curX, curY, this.borderRadius, Math.PI / 2, Math.PI)
+    curX -= this.borderRadius
+    
+    curY -= this.height - 2 * this.borderRadius
+    ctx.lineTo(curX, curY)
+    curX += this.borderRadius
+    ctx.arc(curX, curY, this.borderRadius, Math.PI, 3 * Math.PI / 2)
+    
+    ctx.fillStyle = this.fillStyle
+    ctx.fill()
+    
+    /* PUT TEXT ON IT */
+    if(this.text) {
+      ctx.textBaseline = 'middle'
+      ctx.textAlign = 'center'
+      ctx.fillStyle = '#fff'
+      ctx.fillText(this.text, this.x + this.width / 2, this.y + this.height / 2)
+    }
+  }
+  Button.prototype.onMouseUp = function () {
+    this.onClick()
+    this.state = 'up'
+  }
+  Button.prototype.onMouseDown = function () {
+    this.state = 'down' 
+  }
+  Button.prototype.containsPoint = function (x, y) {
+    return ( x >= this.x
+          && x <= this.x + this.width
+          && y >= this.y
+          && y <= this.y + this.height)
   }
   
   function StatusBar (opts) {
