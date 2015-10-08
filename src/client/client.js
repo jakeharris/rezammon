@@ -209,7 +209,31 @@
   }
   
   Client.prototype.observerConnect = function () {
-     
+    
+    this.isHero = false
+    this.renderables.push(new Button({
+      x: 10,
+      y: 10,
+      width: 100,
+      height: 44,
+      fillStyle: '#f64',
+      text: 'Health',
+      onClick: function () {
+        this.socket.emit('observer-give-health') 
+      }.bind(this)
+    }))
+    this.renderables.push(new Button({
+      x: 10,
+      y: 70,
+      width: 100,
+      height: 44,
+      borderRadius: 4,
+      fillStyle: '#64f',
+      text: 'Mana',
+      onClick: function () {
+        // this.socket.emit('observer-give-mana')
+      }
+    }))
   }
   
 })(this)

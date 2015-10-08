@@ -149,7 +149,6 @@ SocketIOAdapter.prototype.configureServer = function () {
           
       this.server.emit('player-disconnected')
     }.bind(this, socket))
-    
     socket.on('hero-move', function (socket, data) {
       try {
         if(!this.isHero(socket.id))
@@ -168,6 +167,19 @@ SocketIOAdapter.prototype.configureServer = function () {
       }
       
       
+    }.bind(this, socket))
+    socket.on('observer-give-health', function (socket) {
+      try {
+        if(this.isHero(socket.id))
+          throw new InvalidActorError('The Hero may not give himself health.')
+        else {
+          this.game.giveHealth()
+        }
+      }
+      catch (e) {
+        console.error(e.message)
+        return
+      }
     }.bind(this, socket))
   }.bind(this))
 }
