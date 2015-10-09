@@ -13,6 +13,7 @@ function Actor (opts) {
   Entity.call(this, opts)
   
   this.health = 10
+  this.maxHealth = 10
 }
 
 Actor.prototype = Object.create(Entity.prototype)
@@ -37,6 +38,23 @@ Actor.prototype.takeDamage = function (amt) {
   this.health -= amt
   if(this.health < 0) this.health = 0
   if(this.health === 0) this.dead = true
+  
+  return this.health
+}
+Actor.prototype.heal = function (amt) {
+  if(typeof amt === 'undefined')
+    throw new ParameterCountError()
+  if(typeof amt !== 'number')
+    throw new TypeError()
+  if(amt < 0)
+    throw new SyntaxError(
+      'We shouldn\'t be healing a negative amount (received: ' 
+      + amt + 
+      '). Either rename this function, or use a different one.'
+    )
+    
+  this.health += amt
+  if(this.health > this.maxHealth) this.health = this.maxHealth
   
   return this.health
 }

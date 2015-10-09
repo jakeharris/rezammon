@@ -20,14 +20,14 @@ function RezammonGame (server) {
   
   setInterval(function () {
     if(this.hero && this.hero.health) {
-      this.server.emitHealth(this.hero.health - 10, this.hero.health)
-      this.hero.takeDamage(10)
+      this.server.emitHealth(this.hero.health - 1, this.hero.health)
+      this.hero.takeDamage(1)
       if(this.hero.dead) {
         this.hero = null
         this.server.hasHero = false
       }
     }
-  }.bind(this), 3000)
+  }.bind(this), 300)
   
   
 }
@@ -85,7 +85,6 @@ RezammonGame.prototype.move = function (direction, actorID) {
   else this.hero.move(direction)
 }
 RezammonGame.prototype.giveHealth = function () {
-  console.log('%%%%% made it in.')
   var numberOfObservers = Object.keys(this.players).length - 1,
       currentHealth = this.hero.health,
       maxHealth = this.hero.maxHealth
@@ -94,12 +93,10 @@ RezammonGame.prototype.giveHealth = function () {
   // give the hero x health, 
   //   where x is 1/100th of his max health,
   //   divided by the number of observers.
-  console.log('%%%%% currentHealth before: ' + currentHealth)
-  console.log('%%%%% number of observers: ' + numberOfObservers)
-  this.hero.takeDamage(-(maxHealth / 100 / numberOfObservers))
-  console.log('%%%%% currentHealth after: ' + currentHealth)
-
+  // this is obviously too much per click,
+  //   but as long as we're just testing, 
+  //   it should be fine.
+  this.hero.heal(maxHealth / 100 / numberOfObservers)
   
   this.server.emitHealth(currentHealth)
-  console.log('%%%%% called server.emitHealth')
 }
