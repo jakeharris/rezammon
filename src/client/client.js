@@ -81,8 +81,9 @@
     this.renderables.push(new Text({
         fillStyle: '#6f4',
         text: 'u r the hero',
-        x: 100,
-        y: 100
+        x: this.canvas.width / 2,
+        y: this.height - 100,
+        isCentered: true
     }))
     for(var r in this.renderables) {
       if(this.renderables[r] instanceof Text)
@@ -234,6 +235,7 @@
         // this.socket.emit('observer-give-mana')
       }
     }))
+    this.render()
   }
   
 })(this)

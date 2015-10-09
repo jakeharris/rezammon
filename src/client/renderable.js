@@ -40,10 +40,14 @@
   function Text(opts) {
     Renderable.call(this, opts)
     this.text = (opts.text) ? opts.text : 'default text'
+    this.isCentered = (opts.isCentered) ? opts.isCentered : false
   }
   Text.prototype = Object.create(Renderable.prototype)
   Text.prototype.constructor = Text
   Text.prototype.draw = function (ctx) {
+    if(this.isCentered) ctx.textAlign = 'center'
+    else ctx.textAlign = 'left'
+    
     ctx.fillText(this.text, this.x, this.y)
   }
 
